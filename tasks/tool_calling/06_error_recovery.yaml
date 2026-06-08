@@ -1,0 +1,38 @@
+task_id: tools.error_recovery
+version: 1
+suite: tool_calling
+description: Primera tool call falla (path inexistente); debe retry con path correcto.
+max_tries: 2
+timeout_s: 150
+
+prompt:
+  system: |
+    Eres un asistente con acceso a herramientas. Si una tool retorna error,
+    analiza qué pasó y reintenta con argumentos distintos. No te rindas al
+    primer fallo.
+  user: |
+    Lee mi lista de la compra del super y dime qué tengo apuntado.
+    (Pista: las notas viven en /notes/, pero no recuerdo el nombre exacto del
+    archivo de la lista.)
+
+tools:
+  enabled: [read_file]
+  max_turns: 6
+
+verifier:
+  type: tool_trace
+  expected_calls:
+    - tool: read_file
+      args_schema:
+        type: object
+        required: [path]
+        properties:
+          path:
+            type: string
+            pattern: "/notes/groceries"
+  final_message:
+    type: regex
+    pattern: "(tomate|pan|café|lentejas)"
+    flags: i
+  allow_extra_calls: true
+  max_format_errors: 0

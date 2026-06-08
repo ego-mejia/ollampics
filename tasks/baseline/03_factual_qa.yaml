@@ -1,0 +1,17 @@
+task_id: baseline.factual_qa
+version: 1
+suite: baseline
+description: Pregunta factual simple sobre conocimiento general.
+max_tries: 2
+timeout_s: 60
+
+prompt:
+  system: "Responde con una sola palabra o frase corta."
+  user: "¿Cuál es la capital de Japón?"
+
+verifier:
+  type: exact_match
+  expected: ["Tokio", "Tokyo"]
+  case_sensitive: false
+
+metrics_focus: [success, ttft_ms]

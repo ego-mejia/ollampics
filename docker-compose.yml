@@ -1,0 +1,28 @@
+# OLLAMPICS in a container.
+#
+# Prereq: Ollama running on the HOST machine (`ollama serve` or the macOS
+# app). On Mac/Windows Docker Desktop, the default OLLAMA_HOST points at
+# host.docker.internal — no change needed. On Linux, uncomment extra_hosts.
+#
+# Run:
+#   docker compose up --build
+# Then open http://localhost:8000
+
+services:
+  ollampics:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      OLLYMPICS_OLLAMA_HOST: http://host.docker.internal:11434
+      OLLYMPICS_DB_URL: sqlite:////data/ollympics.db
+      # LLM_API_KEY: ${LLM_API_KEY}    # only needed for RAG judge / corpus gen
+      # LLM_MODEL: ${LLM_MODEL}
+    volumes:
+      - ollampics-data:/data
+    # Linux only: uncomment the next two lines so host.docker.internal resolves
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+
+volumes:
+  ollampics-data:

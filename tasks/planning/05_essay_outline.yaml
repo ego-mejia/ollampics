@@ -1,0 +1,38 @@
+task_id: planning.essay_outline
+version: 1
+suite: planning
+description: Crear un outline estructurado para un ensayo técnico.
+max_tries: 1
+timeout_s: 120
+
+prompt:
+  system: "Eres un editor técnico. Produces outlines claros y bien organizados."
+  user: |
+    Crea un outline para un ensayo de 2000 palabras sobre:
+    "El impacto del benchmarking sistemático en el desarrollo de modelos
+    locales de lenguaje."
+
+    Debe tener: introducción, 3 secciones de desarrollo con sub-puntos
+    concretos, y conclusión. Devuelve el outline en formato markdown
+    jerárquico.
+
+canonical_plan:
+  - "Define el thesis statement principal."
+  - "Lista 3 ángulos de desarrollo (ej. reproducibilidad, comparabilidad, eficiencia)."
+  - "Para cada ángulo, 2-3 sub-puntos concretos con ejemplos."
+  - "Estructura introducción y conclusión con su rol específico."
+
+max_steps: 5
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "(introducci[óo]n|introduction)"
+      flags: i
+    - type: regex
+      pattern: "(conclusi[óo]n|conclusion)"
+      flags: i
+    - type: regex
+      pattern: "##|^[1-9]\\.|^-\\s"
+      flags: m

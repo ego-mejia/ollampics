@@ -1,0 +1,30 @@
+task_id: multi.research_deep
+version: 1
+suite: multi_agent
+description: Investigación profunda con 2 iteraciones (Critic vuelve a revisar el draft).
+max_tries: 1
+timeout_s: 360
+
+prompt:
+  system: ""
+  user: |
+    Compara los tradeoffs de cuantizar un modelo LLM a Q4 vs Q8 (peso, calidad,
+    velocidad, VRAM). Produce un reporte técnico con tabla comparativa y
+    recomendaciones por caso de uso.
+
+multi_agent:
+  iterations: 2
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "(Q4|q4_0|4-?bit)"
+    - type: regex
+      pattern: "(Q8|q8_0|8-?bit)"
+    - type: regex
+      pattern: "\\|.+\\|"
+      flags: s
+    - type: regex
+      pattern: "(VRAM|memoria|memory)"
+      flags: i

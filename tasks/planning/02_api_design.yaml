@@ -1,0 +1,36 @@
+task_id: planning.api_design
+version: 1
+suite: planning
+description: Diseñar una API REST para reservación de libros en biblioteca.
+max_tries: 1
+timeout_s: 180
+
+prompt:
+  system: "Eres un arquitecto de software. Diseñas APIs REST claras."
+  user: |
+    Diseña una API REST para un sistema de reservación de libros en biblioteca.
+    Incluye: recursos, endpoints CRUD por recurso, autenticación, y formato de
+    respuestas de error. Devuelve un resumen en markdown con tabla de endpoints.
+
+canonical_plan:
+  - "Lista los recursos principales (books, users, reservations) y sus relaciones."
+  - "Define endpoints CRUD para cada recurso con verbos HTTP correctos."
+  - "Diseña endpoints de autenticación (login, logout, refresh)."
+  - "Especifica el formato de respuestas de error (códigos + JSON estructura)."
+
+max_steps: 6
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "/books"
+      flags: i
+    - type: regex
+      pattern: "/reserv"
+      flags: i
+    - type: regex
+      pattern: "(GET|POST|PUT|DELETE|PATCH)"
+    - type: regex
+      pattern: "(login|auth|token)"
+      flags: i

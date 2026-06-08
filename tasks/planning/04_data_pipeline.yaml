@@ -1,0 +1,45 @@
+task_id: planning.data_pipeline
+version: 1
+suite: planning
+description: Procesar datos de ventas y calcular total por producto.
+max_tries: 1
+timeout_s: 120
+
+prompt:
+  system: "Eres analista de datos. Calculas agregaciones precisas."
+  user: |
+    Tienes estos datos de ventas (formato CSV):
+
+    ```
+    product,units,unit_price
+    Manzanas,10,2.5
+    Peras,5,3.0
+    Manzanas,8,2.5
+    Naranjas,12,1.5
+    Peras,4,3.0
+    Manzanas,6,2.5
+    ```
+
+    Calcula el revenue total por producto (units × unit_price), ordenado de
+    mayor a menor. Devuelve una tabla markdown con producto y revenue.
+
+canonical_plan:
+  - "Parsea las filas y agrupa por producto."
+  - "Calcula revenue = units × unit_price para cada fila y suma por grupo."
+  - "Ordena los grupos por revenue descendente."
+  - "Formatea la salida como tabla markdown."
+
+max_steps: 5
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "Manzanas.*60"
+      flags: s
+    - type: regex
+      pattern: "Peras.*27"
+      flags: s
+    - type: regex
+      pattern: "Naranjas.*18"
+      flags: s

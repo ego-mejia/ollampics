@@ -1,0 +1,17 @@
+task_id: baseline.short_generation
+version: 1
+suite: baseline
+description: Completar una oración corta de forma coherente.
+max_tries: 2
+timeout_s: 60
+
+prompt:
+  system: "Responde de forma breve y directa, sin preámbulos."
+  user: "Completa esta oración con una palabra: El sol sale por el ___"
+
+verifier:
+  type: regex
+  pattern: "(este|oriente|orient)"
+  flags: i
+
+metrics_focus: [tps_decode, ttft_ms]

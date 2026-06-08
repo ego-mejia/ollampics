@@ -1,0 +1,238 @@
+{
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "launcher": "Launcher",
+    "leaderboard": "Leaderboard",
+    "tests": "Tests",
+    "compare": "Compare"
+  },
+  "common": {
+    "loading": "loading…",
+    "error": "Error",
+    "back": "Back",
+    "all": "All",
+    "size": "Size",
+    "name": "Name",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Models installed in Ollama and recent runs.",
+    "newRun": "+ New run",
+    "chartTitle": "Overall model performance",
+    "chartSub": "Weighted success rate across all suites and runtime configs",
+    "chartEmpty": "No runs yet. Launch one to see the chart fill in.",
+    "modelsTitle": "Models in Ollama",
+    "modelsEmpty": "no models · use {{cmd}}",
+    "runsTitle": "Recent runs",
+    "runsEmpty": "no runs yet · use the Launcher or {{cmd}}",
+    "cols": {
+      "id": "ID",
+      "created": "Created",
+      "models": "Models",
+      "suites": "Suites",
+      "success": "Success",
+      "status": "Status"
+    },
+    "deleteRun": "Delete run",
+    "deleting": "Deleting…",
+    "confirmDelete": "Delete run #{{id}}? This permanently removes its attempts and cannot be undone."
+  },
+  "launcher": {
+    "title": "Launcher",
+    "subtitle": "Configure a run. It executes in the background; you'll see progress on the run page.",
+    "modelsLabel": "Models",
+    "modelsSelected": "{{count}} selected",
+    "suitesLabel": "Suites",
+    "suitesSelected": "{{count}} selected",
+    "numCtx": "num_ctx",
+    "kvCache": "KV cache",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "e.g. baseline with reduced KV cache",
+    "launching": "Launching…",
+    "launch": "Launch run",
+    "tasks": "{{count}} tasks"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "Ranking of models by suite, aggregating the best attempt per task.",
+    "suite": "Suite",
+    "sortBy": "Sort by",
+    "model": "Model",
+    "quantization": "Quantization",
+    "allModels": "All models",
+    "allQuants": "All variants",
+    "noSuiteSelected": "Select a suite (or All) to see results.",
+    "allSuitesTitle": "All suites",
+    "allSuitesDesc": "Overall ranking aggregating every suite. Use the filters above to drill down by model or quantization.",
+    "chartTitle": "Performance by model",
+    "empty": "no data for this filter",
+    "cols": {
+      "rank": "#",
+      "model": "Model",
+      "suite": "Suite",
+      "successRate": "Success rate",
+      "tps": "tps",
+      "ttft": "ttft",
+      "tries": "tries",
+      "vram": "vram"
+    }
+  },
+  "run": {
+    "title": "Run",
+    "live": "LIVE",
+    "attempts": "Attempts",
+    "successes": "Successes",
+    "successRate": "Success rate",
+    "waitingFirst": "waiting for first attempt…",
+    "noAttempts": "no attempts",
+    "cols": {
+      "model": "Model",
+      "task": "Task",
+      "try": "Try",
+      "status": "Status",
+      "tps": "tps",
+      "ttft": "ttft",
+      "tokIn": "tok_in",
+      "tokOut": "tok_out",
+      "vram": "vram",
+      "watts": "watts",
+      "wallS": "wall_s"
+    }
+  },
+  "tests": {
+    "title": "Tests",
+    "subtitle": "Benchmark suites available in the harness.",
+    "tasksCount": "{{count}} tasks",
+    "withCorpus": "with corpus",
+    "openSuite": "Open",
+    "tasksInSuite": "Tasks in this suite",
+    "ragCorpusTitle": "Corpus documents",
+    "ragCorpusEmpty": "No corpus generated yet. Click \"Generate corpus\" below.",
+    "ragPromptsTitle": "Prompts used to generate the corpus",
+    "ragPromptsHint": "These markdown files drive the LangGraph agent. Edit them on disk under tasks/rag/prompts/ to customize.",
+    "generateBtn": "Generate corpus",
+    "regenerateBtn": "Regenerate (overwrite)",
+    "generating": "Generating in background…",
+    "generatedAt": "Last generated at {{when}}",
+    "viewDocument": "View",
+    "viewPrompt": "View prompt",
+    "hide": "Hide",
+    "linesCount": "{{count}} lines",
+    "suites": {
+      "baseline": {
+        "label": "Baseline",
+        "description": "Quick sanity check: short generation, JSON output, factual recall, instruction following, list format. Fast first-pass to weed out broken models."
+      },
+      "tool_calling": {
+        "label": "Tool Calling",
+        "description": "Does the model pick the right tool, with valid arguments, in the right order? 6 mocked tools, 8 tasks covering single calls, sequences, error recovery and ambiguity."
+      },
+      "rag": {
+        "label": "RAG",
+        "description": "Retrieval-Augmented Generation over a fictional corpus (Helion Robotics). 50 Q&A in 3 tiers: factual single-doc, multi-doc synthesis, and out-of-corpus honesty checks."
+      },
+      "planning": {
+        "label": "Planning",
+        "description": "LangGraph planning + execution. Each task runs in mode 4a (model plans for itself) and 4b (given a canonical plan) so we can isolate planning ability from execution."
+      },
+      "personal_agent": {
+        "label": "Personal Agent",
+        "description": "20-turn conversation with mid-thread tool calls and recall probes. Measures context memory, tool fidelity over long history, and latency drift as context grows."
+      },
+      "multi_agent": {
+        "label": "Multi-agent",
+        "description": "Multi-role research workflow Researcher → Critic → Writer via LangGraph. Tests collaboration between roles and the quality of the final synthesised report."
+      }
+    },
+    "tasksDescription": "Open a suite to see its individual tasks and (for RAG) the corpus + the prompts used to generate it."
+  },
+  "compare": {
+    "title": "Compare A vs B",
+    "subtitle": "Side-by-side metrics for any two runs. Useful for sweeping quantizations, KV cache configs, or comparing models on the same suite.",
+    "runA": "Run A",
+    "runB": "Run B",
+    "pickHint": "Pick a recent run",
+    "pickPair": "Pick two runs above to compare.",
+    "sameRun": "A and B must be different runs.",
+    "noShared": "No shared tasks between these runs.",
+    "bothPass": "Both pass",
+    "aOnly": "{{id}} only",
+    "bOnly": "{{id}} only",
+    "totalTasks": "Total tasks",
+    "cols": {
+      "task": "Task",
+      "suite": "Suite"
+    }
+  },
+  "home": {
+    "heroTagline": "Benchmark your local AI models like an Olympic decathlon.",
+    "heroSubtitle": "OLLAMPICS runs your Ollama models through agentic tasks — tool calling, RAG, multi-turn conversation, planning, multi-agent workflows — and gives you a clean comparison of how each model performs.",
+    "ctaLaunch": "Launch your first run",
+    "ctaDashboard": "Browse the dashboard",
+    "whatIsTitle": "What is OLLAMPICS?",
+    "whatIs1": "A benchmark harness for local LLMs. Each model competes in the same tasks; results are stored in SQLite and visualised in this app. Designed for people who run Ollama locally and want hard data on which model fits which job.",
+    "whatIs2": "Every run captures throughput, time-to-first-token, VRAM, tokens, retries and a success/fail verdict per task — so you can compare quantizations, models, or runtime configs apples to apples.",
+    "howTitle": "How to use it (3 steps)",
+    "howStep1Title": "1 · Pull models with Ollama",
+    "howStep1": "Browse the Ollama library and pull the models you want to test. Anything Ollama can run, OLLAMPICS can benchmark.",
+    "howStep1CTA": "ollama.com/search",
+    "howStep1Code": "ollama pull qwen3.6:27b-mlx",
+    "howStep2Title": "2 · Pick a test suite",
+    "howStep2": "Open the Tests page to see the six suites available — Baseline (sanity check), Tool Calling, RAG, Planning, Personal Agent, Multi-agent. Each card tells you what it measures.",
+    "howStep3Title": "3 · Launch a run",
+    "howStep3": "From Launcher, tick the models and suites you want, set num_ctx and KV cache, then Launch. You'll see live progress, and afterwards the Leaderboard ranks the models.",
+    "metricsTitle": "What the metrics mean",
+    "metrics": {
+      "tps": {
+        "name": "tps (tokens/s)",
+        "desc": "Decode throughput — tokens generated per second during the answer phase. Higher = faster output."
+      },
+      "ttft": {
+        "name": "ttft (ms)",
+        "desc": "Time to first token. The model's reaction time. Lower = more responsive."
+      },
+      "tokensIn": {
+        "name": "tok_in",
+        "desc": "Prompt tokens the model processed for this task."
+      },
+      "tokensOut": {
+        "name": "tok_out",
+        "desc": "Output tokens the model produced."
+      },
+      "vram": {
+        "name": "vram",
+        "desc": "Peak VRAM (MB) the model occupied while running. Reported by ollama ps."
+      },
+      "watts": {
+        "name": "watts",
+        "desc": "Average GPU power draw (opt-in via powermetrics, requires sudo on macOS)."
+      },
+      "successRate": {
+        "name": "success_rate",
+        "desc": "Fraction of tasks the model passed. A task passes when its verifier (regex / schema / LLM judge) returns OK."
+      },
+      "tries": {
+        "name": "tries",
+        "desc": "Average attempts the model needed to pass (some tasks allow retries on failure)."
+      }
+    },
+    "addTestsTitle": "Adding your own tests",
+    "addTests1": "Tests are plain YAML files in tasks/<suite>/. Drop a new YAML in (or copy an existing one) with prompt, verifier and max_tries — it gets discovered automatically on the next run.",
+    "addTests2": "For RAG specifically, the corpus is generated by an agent (LangGraph + DeepSeek). Go to Tests → RAG, click Generate corpus, edit the prompts on disk to tune what the agent produces.",
+    "addModelsTitle": "Adding more models",
+    "addModels1": "All models come from your local Ollama install. Browse the catalog, pull what you want, then re-open OLLAMPICS — discovered models show up automatically on the Launcher.",
+    "addModelsCTA": "Browse models at ollama.com/search →"
+  },
+  "theme": {
+    "toLight": "Switch to light mode",
+    "toDark": "Switch to dark mode"
+  },
+  "lang": {
+    "switchTo": "Switch language to {{name}}",
+    "english": "English",
+    "spanish": "Spanish"
+  }
+}

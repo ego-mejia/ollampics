@@ -1,0 +1,24 @@
+task_id: baseline.list_format
+version: 1
+suite: baseline
+description: Devolver una lista JSON simple con tres elementos.
+max_tries: 2
+timeout_s: 60
+
+prompt:
+  system: "Responde SOLO con un array JSON, sin markdown."
+  user: "Dame tres frutas tropicales en un array JSON de strings."
+
+verifier:
+  type: composite
+  all_of:
+    - type: json_schema
+      schema:
+        type: array
+        items:
+          type: string
+    - type: regex
+      pattern: "\\[.*\\]"
+      flags: s
+
+metrics_focus: [success, tps_decode]

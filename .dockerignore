@@ -1,0 +1,13 @@
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.git
+.gitignore
+.env
+data/
+frontend/node_modules
+frontend/dist
+frontend/.vite
+docs/blueprint.html

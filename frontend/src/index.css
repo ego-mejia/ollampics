@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light · editorial light style (Stripe / Notion / Vercel light) */
+    --bg:       252 251 248;   /* warm off-white canvas */
+    --card:     255 255 255;   /* pure white cards */
+    --elev:    248 247 243;   /* hairline-different header band */
+    --border:  232 230 224;   /* soft border */
+    --border-soft: 240 238 232;
+    --fg:        24  24  24;
+    --fg-muted: 102 100  94;
+    --fg-dim:  150 148 140;
+  }
+
+  .dark {
+    /* Dark · editorial dark (Linear / Vercel / Resend) */
+    --bg:        13  13  13;
+    --card:      22  22  22;
+    --elev:      26  26  26;
+    --border:    38  38  38;
+    --border-soft: 32 32 32;
+    --fg:       232 230 224;
+    --fg-muted: 156 154 146;
+    --fg-dim:  108 106  98;
+  }
+
+  body {
+    @apply bg-bg text-fg antialiased;
+    font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+  }
+
+  /* Disable transition flash on initial theme apply */
+  html.no-transition * { transition: none !important; }
+}

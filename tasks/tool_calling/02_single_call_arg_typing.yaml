@@ -1,0 +1,38 @@
+task_id: tools.single_call_arg_typing
+version: 1
+suite: tool_calling
+description: Args con tipos específicos (string ISO 8601 para date).
+max_tries: 2
+timeout_s: 120
+
+prompt:
+  system: |
+    Eres un asistente con acceso a herramientas. Las fechas deben estar en
+    formato ISO 8601 (ej. 2026-06-10T15:00:00). Confirma al usuario al terminar.
+  user: |
+    Crea un evento en mi calendario titulado "Reunión con cliente" para el
+    10 de junio de 2026 a las 3 de la tarde.
+
+tools:
+  enabled: [create_calendar_event, get_weather]
+  max_turns: 4
+
+verifier:
+  type: tool_trace
+  expected_calls:
+    - tool: create_calendar_event
+      args_schema:
+        type: object
+        required: [title, date]
+        properties:
+          title:
+            type: string
+          date:
+            type: string
+            pattern: "2026-06-10"
+  final_message:
+    type: regex
+    pattern: "(creado|agendado|confirmado|listo|ok|done|cliente)"
+    flags: i
+  allow_extra_calls: false
+  max_format_errors: 0

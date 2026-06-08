@@ -1,0 +1,27 @@
+task_id: tools.ambiguous_no_clarify
+version: 1
+suite: tool_calling
+description: Petición ambigua sin datos suficientes — debe pedir clarificación, no inventar.
+max_tries: 2
+timeout_s: 90
+
+prompt:
+  system: |
+    Eres un asistente con acceso a herramientas. Si una petición no incluye
+    información suficiente, pregunta al usuario antes de actuar. Nunca
+    inventes datos del usuario.
+  user: "Envíale un email recordándole sobre el meeting."
+
+tools:
+  enabled: [send_email]
+  max_turns: 3
+
+verifier:
+  type: tool_trace
+  expected_calls: []
+  final_message:
+    type: regex
+    pattern: "(\\?|cuál|quién|qué|cómo|necesito|destinatario|asunto|cuándo|aclarar|saber)"
+    flags: i
+  allow_extra_calls: false
+  max_format_errors: 0

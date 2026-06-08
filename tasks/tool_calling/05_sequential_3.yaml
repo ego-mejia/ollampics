@@ -1,0 +1,50 @@
+task_id: tools.sequential_3
+version: 1
+suite: tool_calling
+description: Tres tools en cadena (leer archivo, buscar, agendar evento).
+max_tries: 2
+timeout_s: 240
+
+prompt:
+  system: |
+    Eres un asistente con acceso a herramientas. Usa las que sean necesarias
+    para cumplir la petición. Las fechas en formato ISO 8601.
+  user: |
+    Lee mi lista de pendientes en /notes/todo.md, busca cómo "preparar reporte
+    trimestral", y agéndame un evento para mañana 9 de junio de 2026 a las
+    9am titulado "Trabajar en pendientes".
+
+tools:
+  enabled: [read_file, search_web, create_calendar_event, get_weather]
+  max_turns: 7
+
+verifier:
+  type: tool_trace
+  expected_calls:
+    - tool: read_file
+      args_schema:
+        type: object
+        required: [path]
+        properties:
+          path:
+            type: string
+            pattern: "/notes/todo"
+    - tool: search_web
+      args_schema:
+        type: object
+        required: [query]
+        properties:
+          query:
+            type: string
+    - tool: create_calendar_event
+      args_schema:
+        type: object
+        required: [title, date]
+        properties:
+          title:
+            type: string
+          date:
+            type: string
+            pattern: "2026-06-09"
+  allow_extra_calls: true
+  max_format_errors: 1

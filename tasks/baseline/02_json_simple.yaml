@@ -1,0 +1,25 @@
+task_id: baseline.json_simple
+version: 1
+suite: baseline
+description: Devolver JSON con 3 campos sobre un usuario ficticio.
+max_tries: 3
+timeout_s: 60
+
+prompt:
+  system: "Responde SOLO con JSON válido. Sin texto adicional, sin markdown."
+  user: |
+    Crea un objeto con tres campos: name (string), age (integer), city (string).
+    Inventa los valores. Ejemplo de formato:
+    {"name": "...", "age": 0, "city": "..."}
+
+verifier:
+  type: json_schema
+  schema:
+    type: object
+    required: [name, age, city]
+    properties:
+      name: { type: string }
+      age: { type: integer }
+      city: { type: string }
+
+metrics_focus: [success, ttft_ms]

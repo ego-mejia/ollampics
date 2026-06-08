@@ -1,0 +1,27 @@
+task_id: tools.no_call_needed
+version: 1
+suite: tool_calling
+description: Conversación que NO requiere tools. Mide false-positive rate.
+max_tries: 2
+timeout_s: 90
+
+prompt:
+  system: |
+    Eres un asistente conversacional con acceso a herramientas. Usa las tools
+    SOLO cuando sean necesarias. Para saludos o conversación casual, responde
+    directamente sin llamar nada.
+  user: "Hola, ¿cómo va tu día?"
+
+tools:
+  enabled: [get_weather, send_email, calculator, create_calendar_event]
+  max_turns: 3
+
+verifier:
+  type: tool_trace
+  expected_calls: []
+  final_message:
+    type: regex
+    pattern: "(hola|bien|gracias|asistente|ayudar|saludos|buen)"
+    flags: i
+  allow_extra_calls: false
+  max_format_errors: 0

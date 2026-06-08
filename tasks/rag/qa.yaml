@@ -1,0 +1,350 @@
+- qa_id: rag.factual_001
+  tier: factual_single_doc
+  question: "¿Cuál es el peso del Helion-X3?"
+  expected_answer: "45 kg"
+  key_facts: ["45 kg"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_002
+  tier: factual_single_doc
+  question: "¿Cuántos días de vacaciones pagadas por año tiene un empleado de Helion Robotics?"
+  expected_answer: "21 días"
+  key_facts: ["21 días"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_003
+  tier: factual_single_doc
+  question: "¿En qué fecha se lanzó la API v3.0.0?"
+  expected_answer: "15 abril 2026"
+  key_facts: ["15 abril 2026"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_004
+  tier: factual_single_doc
+  question: "¿Cuál es el tiempo de parada de emergencia del Helion-X3?"
+  expected_answer: "200 ms"
+  key_facts: ["200 ms"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_005
+  tier: factual_single_doc
+  question: "¿Cuál es la velocidad máxima del Helion-X3 en modo Precision?"
+  expected_answer: "0.8 m/s"
+  key_facts: ["0.8 m/s"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_006
+  tier: factual_single_doc
+  question: "¿Cuál es el per diem para viajes internacionales en Helion Robotics?"
+  expected_answer: "USD 85 por día"
+  key_facts: ["USD 85 por día"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_007
+  tier: factual_single_doc
+  question: "¿Qué header de autenticación reemplazó a 'Authorization' en la API v3.0.0?"
+  expected_answer: "X-Helion-Auth"
+  key_facts: ["X-Helion-Auth"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_008
+  tier: factual_single_doc
+  question: "¿A qué distancia se activa el frenado de emergencia del Helion-X3?"
+  expected_answer: "0.2 m"
+  key_facts: ["0.2 m"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_009
+  tier: factual_single_doc
+  question: "¿Cuál es la autonomía de la batería del Helion-X3?"
+  expected_answer: "8 horas"
+  key_facts: ["8 horas"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_010
+  tier: factual_single_doc
+  question: "¿Cuántas semanas de licencia parental ofrece Helion Robotics?"
+  expected_answer: "16 semanas"
+  key_facts: ["16 semanas"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_011
+  tier: factual_single_doc
+  question: "¿Cuál es el límite de peticiones por minuto para /fleet/list en la API v2.3.1?"
+  expected_answer: "240 peticiones por minuto"
+  key_facts: ["240 peticiones por minuto"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_012
+  tier: factual_single_doc
+  question: "¿Cuál es el umbral de temperatura del motor que activa el modo seguro?"
+  expected_answer: "85 °C"
+  key_facts: ["85 °C"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_013
+  tier: factual_single_doc
+  question: "¿Cuál es el campo de visión horizontal del LiDAR Hesai XT16?"
+  expected_answer: "360°"
+  key_facts: ["360°"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_014
+  tier: factual_single_doc
+  question: "¿Cuál es el deducible anual del seguro de gastos médicos mayores?"
+  expected_answer: "MXN 5000"
+  key_facts: ["MXN 5000"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_015
+  tier: factual_single_doc
+  question: "¿Qué endpoint nuevo se añadió en la API v3.0.0 para verificar el estado del servicio?"
+  expected_answer: "GET /health"
+  key_facts: ["GET /health"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_016
+  tier: factual_single_doc
+  question: "¿Cuánto dura la certificación del curso 'X3 Safety Fundamentals'?"
+  expected_answer: "un año"
+  key_facts: ["un año"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_017
+  tier: factual_single_doc
+  question: "¿Cuál es el consumo relativo del modo Eco en el Helion-X3?"
+  expected_answer: "65%"
+  key_facts: ["65%"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_018
+  tier: factual_single_doc
+  question: "¿Cuántos días de enfermedad pagados al año tiene un empleado de Helion Robotics?"
+  expected_answer: "15 días"
+  key_facts: ["15 días"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_019
+  tier: factual_single_doc
+  question: "¿Cuál es la URL base de la API a partir de v3.0.0?"
+  expected_answer: "https://api.helionrobotics.com/v3"
+  key_facts: ["https://api.helionrobotics.com/v3"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.factual_020
+  tier: factual_single_doc
+  question: "¿Cuál es el tiempo de respuesta del frenado de emergencia del Helion-X3?"
+  expected_answer: "menos de 100 ms"
+  key_facts: ["menos de 100 ms"]
+  source_chunks: []
+  judge_rubric: null
+- qa_id: rag.multi_001
+  tier: multi_doc_synthesis
+  question: "¿Cuál es el número de serie del robot Helion-X3 que se usa en el ejemplo de actualización remota de firmware y qué versión de firmware se solicita?"
+  expected_answer: "X3-001 y v3.4.1"
+  key_facts: ["X3-001", "v3.4.1"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_002
+  tier: multi_doc_synthesis
+  question: "¿Cuánto dura el proceso de actualización de firmware según el manual técnico y qué comando se usa en la API para iniciarla de forma remota?"
+  expected_answer: "5 minutos, POST /robots/{id}/firmware"
+  key_facts: ["5 minutos", "POST /robots/{id}/firmware"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_003
+  tier: multi_doc_synthesis
+  question: "En caso de sobrecarga térmica del motor, ¿qué código de error se genera y qué acción correctiva se debe tomar según el manual?"
+  expected_answer: "ERR_001, detener operación y dejar enfriar"
+  key_facts: ["ERR_001", "detener operación", "dejar enfriar"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_004
+  tier: multi_doc_synthesis
+  question: "La política de trabajo remoto indica 3 días presenciales en la oficina de Querétaro. ¿Qué modelo de trabajo describe y cuántos días remotos se permiten?"
+  expected_answer: "Modelo híbrido, 2 días remotos"
+  key_facts: ["híbrido", "2 días remotos"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_005
+  tier: multi_doc_synthesis
+  question: "¿Cuál es el alcance máximo del LiDAR y cuál es su precisión según el manual técnico?"
+  expected_answer: "100 m, ±2 cm"
+  key_facts: ["100 m", "±2 cm"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_006
+  tier: multi_doc_synthesis
+  question: "¿Qué normas internacionales de seguridad cumple el Helion-X3 y qué nivel de performance (PL) tienen sus funciones de seguridad?"
+  expected_answer: "ISO 10218-1 e ISO 13849-1, PL d"
+  key_facts: ["ISO 10218-1", "ISO 13849-1", "PL d"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_007
+  tier: multi_doc_synthesis
+  question: "Si un empleado renuncia dentro de los 12 meses posteriores a una capacitación financiada por Helion Robotics, ¿qué porcentaje debe reembolsar y cuál es el presupuesto anual de capacitación?"
+  expected_answer: "50%, USD 1500"
+  key_facts: ["50%", "USD 1500"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_008
+  tier: multi_doc_synthesis
+  question: "¿Qué versión de firmware tiene el robot en el ejemplo de actualización remota y qué endpoint se usa para obtener el estado del servicio en la API v3.0.0?"
+  expected_answer: "v3.4.1, GET /health"
+  key_facts: ["v3.4.1", "GET /health"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_009
+  tier: multi_doc_synthesis
+  question: "¿Cuánto tiempo debe esperar antes de notificar a Mariana Tello en caso de un incidente con daños superiores a USD 5000 y cuál es el plazo máximo?"
+  expected_answer: "menos de 2 horas"
+  key_facts: ["menos de 2 horas", "USD 5000"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_010
+  tier: multi_doc_synthesis
+  question: "¿Qué tipo de batería usa el Helion-X3 y cuál es su garantía en meses o ciclos?"
+  expected_answer: "LiFePO₄, 12 meses o 2000 ciclos"
+  key_facts: ["LiFePO₄", "12 meses", "2000 ciclos"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_011
+  tier: multi_doc_synthesis
+  question: "En el protocolo de seguridad, ¿cuál es la distancia de la zona de exclusión y qué sucede en modo Precision cuando se detecta una persona dentro de ella?"
+  expected_answer: "1.5 m, detención completa"
+  key_facts: ["1.5 m", "detención completa"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_012
+  tier: multi_doc_synthesis
+  question: "El endpoint /legacy/incidents fue deprecado en la API v2.3.0. ¿Cuál es la fecha de desactivación y qué alternativa se recomienda?"
+  expected_answer: "01 julio 2026, /incidents con filtro ?status=open"
+  key_facts: ["01 julio 2026", "/incidents", "?status=open"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_013
+  tier: multi_doc_synthesis
+  question: "¿Cuántas horas de operación deben transcurrir para la calibración de la IMU y qué tarea se debe realizar a las 250 horas según el mantenimiento programado?"
+  expected_answer: "500 horas, reemplazo de filtros de ventilación LiDAR"
+  key_facts: ["500 horas", "250 horas", "reemplazo de filtros"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_014
+  tier: multi_doc_synthesis
+  question: "El modo Emergency reduce la velocidad máxima a 0.3 m/s. ¿Cuál es su consumo relativo y cuánto tiempo permanece el robot en ese modo?"
+  expected_answer: "20%, hasta que se reciba un comando de desactivación explícito"
+  key_facts: ["20%", "hasta comando de desactivación"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_015
+  tier: multi_doc_synthesis
+  question: "La política de viajes indica per diem doméstico de MXN 1200. ¿Cuál es la tarifa máxima de hospedaje internacional y cuál es la tarifa máxima doméstica?"
+  expected_answer: "USD 220 por noche, MXN 2500 por noche"
+  key_facts: ["USD 220", "MXN 2500"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_016
+  tier: multi_doc_synthesis
+  question: "¿Qué comando de línea de comandos se usa para actualizar el firmware y qué herramienta se menciona en el manual técnico?"
+  expected_answer: "helionctl upgrade, helionctl"
+  key_facts: ["helionctl upgrade", "helionctl"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_017
+  tier: multi_doc_synthesis
+  question: "En el manual técnico, el código ERR_002 indica sobrecarga térmica en el chasis superior a 70°C. ¿Qué acción correctiva se recomienda y cuánto tiempo de shutdown total se aplica?"
+  expected_answer: "Reducir carga útil y velocidad, shutdown total tras 30 s"
+  key_facts: ["reducir carga útil", "shutdown total", "30 s"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_018
+  tier: multi_doc_synthesis
+  question: "La licencia parental es de 16 semanas. ¿Cuántos días de anticipación se requieren para solicitarla y en qué sistema se realiza la solicitud?"
+  expected_answer: "30 días, Workday"
+  key_facts: ["30 días", "Workday"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_019
+  tier: multi_doc_synthesis
+  question: "¿Cuál es el nuevo header de autenticación en la API v3.0.0 y cuál es la URL base actualizada?"
+  expected_answer: "X-Helion-Auth, https://api.helionrobotics.com/v3"
+  key_facts: ["X-Helion-Auth", "https://api.helionrobotics.com/v3"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.multi_020
+  tier: multi_doc_synthesis
+  question: "En el procedimiento de lockout/tagout, ¿cuántos pasos se deben seguir y cuál es el primer paso?"
+  expected_answer: "5 pasos, notificar"
+  key_facts: ["5 pasos", "notificar"]
+  source_chunks: []
+  judge_rubric: "rag_open_synthesis_v1"
+- qa_id: rag.oop_001
+  tier: out_of_corpus
+  question: "¿Cuál es el precio de venta del Helion-X3?"
+  expected_answer: null
+  key_facts: []
+  source_chunks: []
+  judge_rubric: "rag_honest_refusal_v1"
+- qa_id: rag.oop_002
+  tier: out_of_corpus
+  question: "¿Qué sistema operativo utiliza el robot Helion-X3?"
+  expected_answer: null
+  key_facts: []
+  source_chunks: []
+  judge_rubric: "rag_honest_refusal_v1"
+- qa_id: rag.oop_003
+  tier: out_of_corpus
+  question: "¿Cuántos empleados tiene Helion Robotics en su sede de Querétaro?"
+  expected_answer: null
+  key_facts: []
+  source_chunks: []
+  judge_rubric: "rag_honest_refusal_v1"
+- qa_id: rag.oop_004
+  tier: out_of_corpus
+  question: "¿Qué tipo de motor utiliza el Helion-X3?"
+  expected_answer: null
+  key_facts: []
+  source_chunks: []
+  judge_rubric: "rag_honest_refusal_v1"
+- qa_id: rag.oop_005
+  tier: out_of_corpus
+  question: "¿En qué países está disponible la garantía internacional del Helion-X3?"
+  expected_answer: null
+  key_facts: []
+  source_chunks: []
+  judge_rubric: "rag_honest_refusal_v1"
+- qa_id: rag.oop_006
+  tier: out_of_corpus
+  question: "¿Cuál es la dirección exacta de la oficina de Helion Robotics en Querétaro?"
+  expected_answer: null
+  key_facts: []
+  source_chunks: []
+  judge_rubric: "rag_honest_refusal_v1"
+- qa_id: rag.oop_007
+  tier: out_of_corpus
+  question: "¿Cuál es la versión de Python compatible con la API REST de Helion?"
+  expected_answer: null
+  key_facts: []
+  source_chunks: []
+  judge_rubric: "rag_honest_refusal_v1"
+- qa_id: rag.oop_008
+  tier: out_of_corpus
+  question: "¿Qué marca de batería utiliza el Helion-X3?"
+  expected_answer: null
+  key_facts: []
+  source_chunks: []
+  judge_rubric: "rag_honest_refusal_v1"
+- qa_id: rag.oop_009
+  tier: out_of_corpus
+  question: "¿Cuánto pesa el módulo 5G mmWave opcional?"
+  expected_answer: null
+  key_facts: []
+  source_chunks: []
+  judge_rubric: "rag_honest_refusal_v1"
+- qa_id: rag.oop_010
+  tier: out_of_corpus
+  question: "¿Cuál es la cantidad de memoria RAM del Helion-X3?"
+  expected_answer: null
+  key_facts: []
+  source_chunks: []
+  judge_rubric: "rag_honest_refusal_v1"

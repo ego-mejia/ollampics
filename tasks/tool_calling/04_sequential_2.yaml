@@ -1,0 +1,47 @@
+task_id: tools.sequential_2
+version: 1
+suite: tool_calling
+description: Dos tools en secuencia (calcular y luego enviar email con resultado).
+max_tries: 2
+timeout_s: 180
+
+prompt:
+  system: |
+    Eres un asistente con acceso a herramientas. Encadena llamadas cuando una
+    depende del resultado de otra.
+  user: |
+    Calcula cuánto es (15 * 8) + 42 y mándame el resultado por email a
+    admin@example.com con asunto "Cálculo solicitado".
+
+tools:
+  enabled: [calculator, send_email, get_weather]
+  max_turns: 5
+
+verifier:
+  type: tool_trace
+  expected_calls:
+    - tool: calculator
+      args_schema:
+        type: object
+        required: [expression]
+        properties:
+          expression:
+            type: string
+    - tool: send_email
+      args_schema:
+        type: object
+        required: [to, subject, body]
+        properties:
+          to:
+            type: string
+            pattern: "admin@example\\.com"
+          subject:
+            type: string
+          body:
+            type: string
+  final_message:
+    type: regex
+    pattern: "(enviado|email|162|listo|done)"
+    flags: i
+  allow_extra_calls: true
+  max_format_errors: 0

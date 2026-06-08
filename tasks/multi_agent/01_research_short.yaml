@@ -1,0 +1,28 @@
+task_id: multi.research_short
+version: 1
+suite: multi_agent
+description: Investigación corta sobre un tema concreto (Researcher → Critic → Writer, 1 iteración).
+max_tries: 1
+timeout_s: 240
+
+prompt:
+  system: ""
+  user: |
+    ¿Qué hace que un benchmark de modelos de lenguaje sea confiable?
+    Produce un reporte estructurado con secciones markdown.
+
+multi_agent:
+  iterations: 1
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "^##\\s"
+      flags: m
+    - type: regex
+      pattern: "(reproduc|determin|seed)"
+      flags: i
+    - type: regex
+      pattern: "(leakage|contamin|pre.?training)"
+      flags: i

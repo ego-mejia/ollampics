@@ -1,0 +1,174 @@
+task_id: personal_agent.daily_assistant
+version: 1
+suite: personal_agent
+description: 20 turnos como asistente diario · 3 recall probes · 5 tool calls esperadas.
+max_tries: 1
+timeout_s: 90
+
+prompt:
+  system: |
+    Eres Ada, una asistente personal cálida y concisa. Mantienes notas mentales
+    de lo que el usuario te cuenta y lo recuerdas más tarde. Usas tools cuando
+    realmente ayuden. Respondes en español, en máximo 4 líneas.
+  user: ""
+
+personal_agent:
+  tools_enabled:
+    - get_weather
+    - set_reminder
+    - take_note
+    - create_calendar_event
+    - search_web
+  max_turns: 25
+  script:
+    - turn: 1
+      type: scripted_user
+      message: "Hola Ada, me llamo Eduardo y vivo en Querétaro. ¿Cómo te llamas tú?"
+      plants:
+        user_name: "Eduardo"
+        user_city: "Querétaro"
+
+    - turn: 2
+      type: scripted_user
+      message: "Cuéntame algo curioso sobre tu trabajo como asistente."
+
+    - turn: 3
+      type: scripted_user
+      message: "Crea un recordatorio para llamar a mi mamá el viernes a las 7pm, por favor."
+      expect_tool:
+        name: set_reminder
+        args_schema:
+          type: object
+          required: [title, when]
+          properties:
+            title:
+              type: string
+              pattern: "(mam[áa]|mom|mother)"
+            when:
+              type: string
+      plants:
+        reminder_subject: "llamar a mi mamá"
+        reminder_when: "viernes 7pm"
+
+    - turn: 4
+      type: scripted_user
+      message: "Por cierto, mi café favorito es de Coatepec. Soy muy quisquilloso con eso."
+      plants:
+        favorite_coffee: "Coatepec"
+
+    - turn: 5
+      type: scripted_user
+      message: "¿Qué te parece si planeamos mi día de mañana?"
+
+    - turn: 6
+      type: scripted_user
+      message: "Primero, dime cómo va a estar el clima mañana donde vivo."
+      expect_tool:
+        name: get_weather
+        args_schema:
+          type: object
+          required: [city]
+          properties:
+            city:
+              type: string
+              enum: ["Querétaro", "Queretaro"]
+
+    - turn: 7
+      type: scripted_user
+      message: "Mi reunión más importante mañana es con el equipo de producto, sobre el lanzamiento del Helion-X3."
+      plants:
+        important_meeting: "equipo de producto sobre Helion-X3"
+
+    - turn: 8
+      type: scripted_user
+      message: "Mientras tanto, anota que necesito comprar pan integral y leche."
+
+    - turn: 9
+      type: scripted_user
+      message: "Agéndame esa reunión con el equipo de producto, mañana a las 11am, dura 1 hora."
+      expect_tool:
+        name: create_calendar_event
+        args_schema:
+          type: object
+          required: [title, date]
+          properties:
+            title:
+              type: string
+              pattern: "(producto|product|Helion|lanzamiento)"
+            date:
+              type: string
+
+    - turn: 10
+      type: recall_probe
+      message: "Oye, ya se me olvidó: ¿en qué ciudad vivo?"
+      expect_substr_any: ["Querétaro", "Queretaro"]
+
+    - turn: 11
+      type: scripted_user
+      message: "Perfecto. ¿Sabes qué? Estoy considerando aprender Rust este año."
+      plants:
+        learning_goal: "Rust"
+
+    - turn: 12
+      type: scripted_user
+      message: "¿Qué opinas? ¿Vale la pena el esfuerzo?"
+
+    - turn: 13
+      type: scripted_user
+      message: "Busca artículos sobre 'Rust vs Go performance' para revisarlos después."
+      expect_tool:
+        name: search_web
+        args_schema:
+          type: object
+          required: [query]
+          properties:
+            query:
+              type: string
+              pattern: "(Rust|rust)"
+
+    - turn: 14
+      type: recall_probe
+      message: "Recuérdame, ¿de dónde dije que es mi café favorito?"
+      expect_substr_any: ["Coatepec"]
+
+    - turn: 15
+      type: scripted_user
+      message: "Cambiando de tema: ¿cómo se prepara una buena tortilla de patatas?"
+
+    - turn: 16
+      type: scripted_user
+      message: "Gracias. Volviendo al trabajo, ¿qué pendientes me has anotado hoy?"
+
+    - turn: 17
+      type: scripted_user
+      message: "Anota también que debo revisar el reporte trimestral antes del jueves."
+
+    - turn: 18
+      type: scripted_user
+      message: "Y agrega esa nota con el tag 'urgente' por favor."
+      expect_tool:
+        name: take_note
+        args_schema:
+          type: object
+          required: [content]
+          properties:
+            content:
+              type: string
+              pattern: "(reporte|trimestral)"
+
+    - turn: 19
+      type: recall_probe
+      message: "¿Para qué era el recordatorio que te pedí al principio?"
+      expect_substr_any: ["mamá", "mama", "madre", "viernes", "llamar"]
+
+    - turn: 20
+      type: closing_summary
+      message: "Antes de cerrar, dame un resumen breve de lo que hicimos hoy."
+      # Substrings tolerantes a variaciones morfológicas (verbo vs sustantivo).
+      expect_substr_all: ["mam", "reuni"]
+
+verifier:
+  type: personal_agent
+  min_recall_rate: 0.66
+  min_tool_fidelity: 0.6
+  require_closing_summary: true

@@ -1,0 +1,42 @@
+task_id: tools.parallel_independent
+version: 1
+suite: tool_calling
+description: Dos tools independientes (clima de dos ciudades). Idealmente en paralelo.
+max_tries: 2
+timeout_s: 150
+
+prompt:
+  system: |
+    Eres un asistente con acceso a herramientas. Si necesitas varias tools
+    independientes, llámalas todas a la vez (en un solo turno) cuando puedas.
+  user: "Dime el clima en Tokio y en París."
+
+tools:
+  enabled: [get_weather]
+  max_turns: 4
+
+verifier:
+  type: tool_trace
+  expected_calls:
+    - tool: get_weather
+      args_schema:
+        type: object
+        required: [city]
+        properties:
+          city:
+            type: string
+            enum: [Tokio, Tokyo]
+    - tool: get_weather
+      args_schema:
+        type: object
+        required: [city]
+        properties:
+          city:
+            type: string
+            enum: ["París", "Paris"]
+  final_message:
+    type: regex
+    pattern: "(Tokio|Tokyo).*(París|Paris)|(París|Paris).*(Tokio|Tokyo)"
+    flags: is
+  allow_extra_calls: false
+  max_format_errors: 0

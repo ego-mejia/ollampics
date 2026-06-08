@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ollympics · Blueprint del sistema</title>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --bg-elev: #1a1a1a;
+    --bg-card: #1f1f1f;
+    --text: #e8e6e0;
+    --text-muted: #9c9a92;
+    --text-dim: #6c6a62;
+    --accent: #d4853a;
+    --accent-2: #5dcaa5;
+    --accent-3: #7aa7d4;
+    --border: #2a2a2a;
+    --border-strong: #3a3a3a;
+    --code-bg: #161616;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #faf9f5;
+      --bg-elev: #ffffff;
+      --bg-card: #ffffff;
+      --text: #2c2c2a;
+      --text-muted: #5f5e5a;
+      --text-dim: #888780;
+      --accent: #b56222;
+      --accent-2: #0f6e56;
+      --accent-3: #2a5b8a;
+      --border: #e5e3dc;
+      --border-strong: #cdc9bf;
+      --code-bg: #f1efe8;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+  aside.sidebar {
+    background: var(--bg-elev);
+    border-right: 1px solid var(--border);
+    padding: 32px 24px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .brand {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .brand-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    letter-spacing: 0.02em;
+  }
+  nav.toc { display: flex; flex-direction: column; gap: 2px; }
+  nav.toc a {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.15s, color 0.15s;
+  }
+  nav.toc a:hover { background: var(--border); color: var(--text); }
+  nav.toc a.active { background: var(--border); color: var(--accent); }
+  nav.toc .group {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin: 20px 10px 6px;
+  }
+  nav.toc .group:first-child { margin-top: 0; }
+  main {
+    padding: 60px 80px;
+    max-width: 1100px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  h2 {
+    font-size: 22px;
+    font-weight: 500;
+    margin: 56px 0 16px;
+    padding-top: 12px;
+    color: var(--text);
+    scroll-margin-top: 32px;
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 32px 0 12px;
+    color: var(--text);
+  }
+  h4 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 18px 0 8px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  p { color: var(--text); margin: 0 0 14px; }
+  p.lede {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+  ul, ol { margin: 0 0 18px 22px; color: var(--text); }
+  li { margin: 4px 0; }
+  strong { color: var(--text); font-weight: 500; }
+  em { color: var(--text-muted); font-style: italic; }
+  code {
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    color: var(--accent);
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.6;
+  }
+  pre code {
+    background: none;
+    padding: 0;
+    color: var(--text);
+    font-size: 13px;
+  }
+  .callout {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin: 20px 0;
+  }
+  .callout-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout.green { border-left-color: var(--accent-2); }
+  .callout.green .callout-title { color: var(--accent-2); }
+  .callout.blue { border-left-color: var(--accent-3); }
+  .callout.blue .callout-title { color: var(--accent-3); }
+  details.collapsible {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 12px 0;
+    overflow: hidden;
+  }
+  details.collapsible[open] { border-color: var(--border-strong); }
+  details.collapsible summary {
+    cursor: pointer;
+    padding: 14px 20px;
+    font-weight: 500;
+    list-style: none;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+  }
+  details.collapsible summary::-webkit-details-marker { display: none; }
+  details.collapsible summary::before {
+    content: "›";
+    color: var(--text-dim);
+    font-size: 18px;
+    transition: transform 0.15s;
+    display: inline-block;
+  }
+  details.collapsible[open] summary::before { transform: rotate(90deg); }
+  details.collapsible .content {
+    padding: 0 20px 20px 38px;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+    margin-top: 4px;
+  }
+  .suite-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin: 18px 0 28px;
+  }
+  .suite-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .suite-card h4 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .suite-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .diagram-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 24px 0 28px;
+    overflow-x: auto;
+  }
+  .diagram-wrap pre {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .meta-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 22px;
+    font-size: 14px;
+  }
+  .meta-table th, .meta-table td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .meta-table th {
+    color: var(--text-dim);
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .meta-table td.mono, .meta-table td:first-child.mono {
+    font-family: ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .badge {
+    display: inline-block;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .badge.done { color: var(--accent-2); border-color: var(--accent-2); }
+  .badge.wip { color: var(--accent); border-color: var(--accent); }
+  .badge.next { color: var(--accent-3); border-color: var(--accent-3); }
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    aside.sidebar { position: static; height: auto; }
+    main { padding: 32px 24px; }
+    .suite-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="brand">Ollympics</div>
+  <div class="brand-sub">Blueprint del sistema</div>
+  <nav class="toc">
+    <div class="group">Introducción</div>
+    <a href="#overview">Visión general</a>
+    <a href="#principles">Principios de diseño</a>
+    <a href="#structure">Estructura del proyecto</a>
+
+    <div class="group">Arquitectura</div>
+    <a href="#architecture">Vista general</a>
+    <a href="#stack">Stack tecnológico</a>
+    <a href="#db-schema">Schema de DB</a>
+    <a href="#api">Contratos API</a>
+    <a href="#frontend">Frontend</a>
+
+    <div class="group">Runner</div>
+    <a href="#runner">Loop principal</a>
+    <a href="#ollama-control">Control de Ollama</a>
+    <a href="#metrics">Métricas</a>
+    <a href="#judge">Sistema de juez</a>
+
+    <div class="group">Suites</div>
+    <a href="#suite-baseline">1. Baseline</a>
+    <a href="#suite-tools">2. Tool Calling</a>
+    <a href="#suite-rag">3. RAG</a>
+    <a href="#suite-planning">4. Planning</a>
+    <a href="#suite-multi">5. Multi-agent</a>
+    <a href="#suite-personal">6. Personal Agent</a>
+
+    <div class="group">Configuración</div>
+    <a href="#task-format">Formato de tasks</a>
+    <a href="#corpus">Corpus RAG</a>
+    <a href="#seed-models">Modelos seed</a>
+    <a href="#cli">CLI</a>
+
+    <div class="group">Implementación</div>
+    <a href="#phases">Roadmap por fases</a>
+    <a href="#decisions">Decisiones de diseño</a>
+    <a href="#open-questions">Preguntas abiertas</a>
+  </nav>
+</aside>
+
+<main>
+
+<h1>Ollympics</h1>
+<p class="lede">Sistema de benchmarking agéntico para modelos locales en Ollama. Cada modelo compite en todas las pruebas, registra sus estadísticas en SQLite, y el dashboard React permite comparar modelos, cuantizaciones, y configuraciones de runtime.</p>
+
+<h2 id="overview">Visión general</h2>
+<p>Ollympics responde una pregunta concreta: <strong>"¿qué modelo local me conviene correr en mi máquina, para qué tarea, y con qué configuración?"</strong>. El sistema no es un duelo en vivo entre modelos — es un decatlón donde cada modelo participa <em>independientemente</em>, registra su desempeño en cada prueba, y la comparación ocurre después en el dashboard.</p>
+
+<p>El uso típico es: el usuario tiene varios modelos descargados en Ollama (distintas familias, tamaños, cuantizaciones). Dispara una corrida especificando qué modelos quiere evaluar y qué suites correr. El sistema levanta cada modelo en Ollama, ejecuta las suites no completadas, guarda métricas detalladas, y avanza al siguiente modelo. El usuario abre el frontend para explorar el ranking, comparar dos modelos lado a lado, y entender en qué tarea cada uno brilla o falla.</p>
+
+<div class="callout">
+  <div class="callout-title">Filosofía</div>
+  <p>Cada modelo corre solo, en serie. La VRAM unificada de un Apple Silicon (o la GPU única de la mayoría de máquinas) no permite correr modelos en paralelo sin que las mediciones se contaminen. El paralelismo de Ollympics ocurre en el dashboard, no en el runner.</p>
+</div>
+
+<h2 id="principles">Principios de diseño</h2>
+
+<table class="meta-table">
+  <thead><tr><th>Principio</th><th>Consecuencia práctica</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">Determinismo primero</td><td><code>temperature=0</code>, <code>seed=42</code>, <code>top_p=1</code> por default. Reproducibilidad &gt; variedad.</td></tr>
+    <tr><td class="mono">Idempotencia</td><td>Re-ejecutar el mismo benchmark no recalcula tareas ya completadas. La clave única es <code>(modelo, runtime_hash, task_id, task_version)</code>.</td></tr>
+    <tr><td class="mono">Atribución limpia</td><td>Tres ejes ortogonales: <strong>modelo</strong>, <strong>runtime</strong>, <strong>tarea</strong>. Cada variable cambia por separado para que la comparación sea legible.</td></tr>
+    <tr><td class="mono">Veredictos auditables</td><td>Cada intento guarda el transcript completo (prompt + respuesta + tool calls). Sin transcript no hay forma de revisar por qué algo falló.</td></tr>
+    <tr><td class="mono">Local-first</td><td>El sistema funciona sin red. La API externa (DeepSeek como juez) es opt-in por suite.</td></tr>
+    <tr><td class="mono">Versionado de tareas</td><td>Cada task tiene <code>task_id</code> + <code>version</code>. Si modificas un test, las corridas viejas siguen siendo válidas; las nuevas se recalculan automáticamente.</td></tr>
+    <tr><td class="mono">Tareas como datos</td><td>Las tasks se definen en YAML, no en código. Agregar una task no requiere cambiar el runner.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="structure">Estructura del proyecto</h2>
+
+<pre><code>ollympics/
+├── pyproject.toml              # gestionado por uv
+├── uv.lock
+├── docs/
+│   └── blueprint.html          # este documento
+├── backend/
+│   ├── api/                    # FastAPI: rutas REST + WebSocket
+│   ├── core/                   # runner, ollama control, métricas, juez
+│   ├── suites/                 # implementación de cada suite
+│   ├── db/                     # SQLAlchemy models + migraciones alembic
+│   ├── workers/                # ejecución asíncrona
+│   └── main.py                 # entrypoint FastAPI
+├── frontend/                   # React + Vite + TS + Tailwind
+│   ├── src/
+│   │   ├── pages/              # Launcher, LiveRun, Leaderboard, Compare, TaskDetail
+│   │   ├── components/         # tablas, charts (recharts), forms
+│   │   └── api/                # cliente generado desde OpenAPI
+│   └── package.json
+├── cli/
+│   └── main.py                 # Typer: `oly run`, `oly serve`, `oly compare`
+├── tasks/                      # definiciones versionadas, tracked en git
+│   ├── baseline/
+│   ├── tool_calling/
+│   ├── rag/
+│   │   ├── corpus/             # documentos generados
+│   │   ├── prompts/            # Jinja2 templates para regenerar
+│   │   └── qa.yaml             # 50 preguntas
+│   ├── planning/
+│   ├── multi_agent/
+│   └── personal_agent/
+├── data/                       # ignorado por git
+│   ├── ollympics.db            # SQLite
+│   └── chroma/                 # vector store local
+└── .env.example                # OLLAMA_HOST, DEEPSEEK_API_KEY, etc.</code></pre>
+
+<h3>Commit híbrido</h3>
+<p>Lo que define el comportamiento se versiona. El estado generado y las claves se ignoran.</p>
+
+<table class="meta-table">
+  <thead><tr><th>Path</th><th>Git</th><th>Razón</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">tasks/</td><td>versionado</td><td>definición de las pruebas — debe estar bajo control de versiones</td></tr>
+    <tr><td class="mono">backend/, frontend/, cli/</td><td>versionado</td><td>código</td></tr>
+    <tr><td class="mono">data/ollympics.db</td><td>ignorado</td><td>datos crecen, sensibles a cambios de schema</td></tr>
+    <tr><td class="mono">data/chroma/</td><td>ignorado</td><td>vector store regenerable desde el corpus</td></tr>
+    <tr><td class="mono">.env</td><td>ignorado</td><td>claves de API (DeepSeek)</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="architecture">Arquitectura</h2>
+
+<div class="diagram-wrap">
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                         CLI (Typer)                             │
+│         oly run / oly serve / oly compare / oly seed            │
+└────────────────────┬────────────────────────────────────────────┘
+                     │
+       ┌─────────────┴──────────────┐
+       │                            │
+       ▼                            ▼
+┌──────────────┐            ┌───────────────────┐
+│   Runner     │◄──────────►│  FastAPI Backend  │
+│  (asyncio)   │   eventos  │   REST + WS       │
+└──────┬───────┘            └────────┬──────────┘
+       │                             │
+       │ controla                    │ HTTP/WS
+       ▼                             ▼
+┌──────────────┐            ┌───────────────────┐
+│ Ollama HTTP  │            │  React Dashboard  │
+│ localhost:   │            │     (Vite)        │
+│   11434      │            │                   │
+└──────┬───────┘            └───────────────────┘
+       │
+       │ inferencia
+       ▼
+┌──────────────┐
+│  Modelo en   │
+│   Metal/MLX  │
+└──────────────┘
+
+       Persistencia
+       ▼
+┌──────────────────────────────────────┐
+│  SQLite (data/ollympics.db)          │
+│  ├─ runs                             │
+│  ├─ attempts                         │
+│  ├─ tasks_registry                   │
+│  └─ judge_evaluations                │
+│                                      │
+│  ChromaDB (data/chroma/)             │
+│  └─ embeddings del corpus RAG        │
+└──────────────────────────────────────┘
+
+       Externo (opcional)
+       ▼
+┌──────────────────────────────────────┐
+│  DeepSeek API (juez para suites      │
+│  con evaluación abierta)             │
+└──────────────────────────────────────┘
+</code></pre>
+</div>
+
+<h3>Flujo de una corrida</h3>
+<ol>
+  <li>Usuario dispara <code>oly run --models qwen3.6:27b-mlx,gemma4:12b-mlx --suites all</code> (o lo mismo desde el frontend).</li>
+  <li>El runner crea una fila en <code>runs</code> con la configuración (modelos, runtime, suites, git_sha del harness).</li>
+  <li>Para cada modelo: pull si falta, set env de KV cache, levantar en Ollama, warmup prompt.</li>
+  <li>Para cada suite y cada task: chequear si ya existe attempt válido para <code>(modelo, runtime_hash, task_id, task_version)</code>. Si sí, skip.</li>
+  <li>Ejecutar con N tries (configurable por task). Medir tokens/s, ttft, vram, watts. Guardar attempt completo.</li>
+  <li>Si la suite usa juez DeepSeek, mandar transcript a DeepSeek tras cada attempt y guardar veredicto.</li>
+  <li>Emitir evento por WebSocket al frontend en cada hito (task started, attempt finished, suite finished, model finished).</li>
+  <li>Al terminar el modelo: <code>ollama stop</code> para liberar VRAM antes de cargar el siguiente.</li>
+</ol>
+
+<h2 id="stack">Stack tecnológico</h2>
+
+<table class="meta-table">
+  <thead><tr><th>Componente</th><th>Tecnología</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td>Gestor Python</td><td>uv</td><td>consistente con Darwin; gestiona venv + lockfile</td></tr>
+    <tr><td>Backend</td><td>FastAPI</td><td>async nativo, OpenAPI auto, WebSocket fácil</td></tr>
+    <tr><td>CLI</td><td>Typer + Rich</td><td>misma stack que Darwin, output bonito</td></tr>
+    <tr><td>Schemas</td><td>Pydantic v2</td><td>validación + serialización + tipos para frontera LLM</td></tr>
+    <tr><td>LLM client</td><td>LiteLLM</td><td>abstrae Ollama, DeepSeek, OpenAI con misma interfaz</td></tr>
+    <tr><td>ORM</td><td>SQLAlchemy 2 + Alembic</td><td>migraciones limpias, queries ricas para comparaciones</td></tr>
+    <tr><td>DB</td><td>SQLite</td><td>embebida, suficiente; migrar a Postgres después si crece</td></tr>
+    <tr><td>Vector DB</td><td>ChromaDB</td><td>embebida, persiste a disco, sin servidor</td></tr>
+    <tr><td>Embeddings</td><td>nomic-embed-text (vía Ollama)</td><td>multilingüe, ~270MB, local, gratuito</td></tr>
+    <tr><td>Templates de prompt</td><td>Jinja2</td><td>consistente con Darwin; parametrizables</td></tr>
+    <tr><td>Frontend</td><td>React 18 + Vite + TS + Tailwind</td><td>standard moderno, build rápido</td></tr>
+    <tr><td>Charts</td><td>Recharts</td><td>componentes React, suficiente para barras/líneas/scatter</td></tr>
+    <tr><td>Workflow agéntico</td><td>LangGraph + (CrewAI opcional)</td><td>LangGraph para control fino; CrewAI solo en suite multi-agente de investigación</td></tr>
+    <tr><td>Métricas de hardware</td><td>powermetrics, parseo de <code>ollama ps</code></td><td>Apple Silicon: no hay nvidia-smi</td></tr>
+  </tbody>
+</table>
+
+<h2 id="db-schema">Schema de base de datos</h2>
+
+<p>SQLite con cuatro tablas principales más un par auxiliares. Pensado para que las queries del dashboard sean simples y rápidas.</p>
+
+<pre><code>-- Configuración de una corrida. Una corrida puede abarcar múltiples modelos y suites.
+CREATE TABLE runs (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  status          TEXT NOT NULL,              -- queued | running | done | failed | cancelled
+  harness_sha     TEXT NOT NULL,              -- git sha del harness al momento de la corrida
+  config_json     TEXT NOT NULL,              -- snapshot completo de la config (modelos, suites, params)
+  notes           TEXT
+);
+
+-- Catálogo de modelos vistos. Se llena automáticamente al evaluar.
+CREATE TABLE models (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  name            TEXT NOT NULL,              -- ej. "qwen3.6:27b-mlx"
+  family          TEXT,                       -- ej. "qwen3.6"
+  size_params_b   REAL,                       -- ej. 27.0 (en miles de millones)
+  quantization    TEXT,                       -- ej. "mlx-q4", "Q5_K_M", "Q8_0"
+  backend         TEXT,                       -- "mlx" | "gguf"
+  size_bytes      INTEGER,
+  UNIQUE(name)
+);
+
+-- Combinación específica de runtime params que aplica a un intento.
+-- Tener esto separado permite comparar "mismo modelo, distinto KV cache".
+CREATE TABLE runtime_configs (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  hash            TEXT NOT NULL UNIQUE,       -- hash determinista de los campos
+  num_ctx         INTEGER NOT NULL,           -- ej. 8192, 32768
+  kv_cache_type   TEXT NOT NULL,              -- "f16" | "q8_0" | "q4_0"
+  num_gpu         INTEGER,
+  num_thread      INTEGER,
+  temperature     REAL NOT NULL DEFAULT 0.0,
+  seed            INTEGER NOT NULL DEFAULT 42,
+  extra_json      TEXT                        -- otros params específicos
+);
+
+-- Catálogo de tasks que existen, con versión.
+CREATE TABLE tasks_registry (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  task_id         TEXT NOT NULL,              -- ej. "baseline.json_simple"
+  version         INTEGER NOT NULL,           -- bump cuando cambia el contrato del test
+  suite           TEXT NOT NULL,              -- "baseline" | "tool_calling" | "rag" | ...
+  spec_json       TEXT NOT NULL,              -- definición completa
+  judge_required  BOOLEAN NOT NULL DEFAULT 0, -- si necesita LLM judge
+  UNIQUE(task_id, version)
+);
+
+-- Cada intento de ejecutar una task con una configuración específica.
+CREATE TABLE attempts (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id          INTEGER NOT NULL REFERENCES runs(id),
+  model_id        INTEGER NOT NULL REFERENCES models(id),
+  runtime_id      INTEGER NOT NULL REFERENCES runtime_configs(id),
+  task_id         INTEGER NOT NULL REFERENCES tasks_registry(id),
+  try_n           INTEGER NOT NULL,           -- 1..N
+  status          TEXT NOT NULL,              -- success | fail | error | timeout
+  started_at      TIMESTAMP NOT NULL,
+  finished_at     TIMESTAMP,
+  wall_time_s     REAL,
+  ttft_ms         INTEGER,                    -- time to first token
+  tokens_in       INTEGER,
+  tokens_out      INTEGER,
+  tps_decode      REAL,                       -- tokens/s en fase de decode
+  peak_vram_mb    INTEGER,
+  avg_watts       REAL,
+  error_type      TEXT,                       -- json_invalid | timeout | wrong_answer | loop | api_error
+  error_message   TEXT,
+  transcript_json TEXT NOT NULL,              -- prompts, respuestas, tool calls completos
+  UNIQUE(run_id, model_id, runtime_id, task_id, try_n)
+);
+
+-- Veredictos de jueces (DeepSeek u otros) sobre attempts que requieren evaluación abierta.
+CREATE TABLE judge_evaluations (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  attempt_id      INTEGER NOT NULL REFERENCES attempts(id) ON DELETE CASCADE,
+  judge_model     TEXT NOT NULL,              -- ej. "deepseek-chat"
+  rubric_name     TEXT NOT NULL,              -- ej. "rag_open_answer_v1"
+  score           REAL NOT NULL,              -- 0.0 - 1.0
+  pass            BOOLEAN NOT NULL,
+  rationale       TEXT,
+  cost_usd        REAL,
+  created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(attempt_id, judge_model, rubric_name)
+);
+
+-- Índices clave para las queries del dashboard.
+CREATE INDEX idx_attempts_model_task ON attempts(model_id, task_id);
+CREATE INDEX idx_attempts_run ON attempts(run_id);
+CREATE INDEX idx_attempts_status ON attempts(status);
+</code></pre>
+
+<div class="callout green">
+  <div class="callout-title">¿Por qué runtime_configs separado?</div>
+  <p>Si quieres comparar "qwen3.6:27b-mlx con KV cache f16" vs "qwen3.6:27b-mlx con KV cache q8_0", ambos comparten <code>model_id</code> pero difieren en <code>runtime_id</code>. La query del dashboard se vuelve trivial: <code>WHERE model_id=X GROUP BY runtime_id</code>. Si hubiéramos metido el runtime dentro de attempts, las queries de comparación serían un dolor.</p>
+</div>
+
+<h3>Vistas materializadas (para el dashboard)</h3>
+
+<pre><code>-- Mejor attempt por (modelo, runtime, task): el primer success o el último error si nunca pasó.
+CREATE VIEW best_attempts AS
+SELECT a.* FROM attempts a
+WHERE a.id = (
+  SELECT id FROM attempts a2
+  WHERE a2.model_id = a.model_id
+    AND a2.runtime_id = a.runtime_id
+    AND a2.task_id = a.task_id
+  ORDER BY (a2.status = 'success') DESC, a2.try_n ASC
+  LIMIT 1
+);
+
+-- Resumen por modelo y suite.
+CREATE VIEW model_suite_summary AS
+SELECT
+  m.name AS model_name,
+  rc.hash AS runtime_hash,
+  tr.suite AS suite,
+  COUNT(*) AS total_tasks,
+  SUM(CASE WHEN ba.status='success' THEN 1 ELSE 0 END) AS successes,
+  AVG(ba.tps_decode) AS avg_tps,
+  AVG(ba.ttft_ms) AS avg_ttft_ms,
+  AVG(ba.try_n) AS avg_tries
+FROM best_attempts ba
+JOIN models m ON m.id = ba.model_id
+JOIN runtime_configs rc ON rc.id = ba.runtime_id
+JOIN tasks_registry tr ON tr.id = ba.task_id
+GROUP BY m.id, rc.id, tr.suite;
+</code></pre>
+
+<h2 id="api">Contratos API</h2>
+
+<p>FastAPI expone REST para CRUD y WebSocket para progreso en vivo. OpenAPI se genera automático y el cliente TS del frontend se regenera de ahí.</p>
+
+<h3>Endpoints REST</h3>
+
+<table class="meta-table">
+  <thead><tr><th>Método y path</th><th>Descripción</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">GET /api/models</td><td>Lista modelos descubiertos. Llama a <code>ollama list</code> y cruza con la tabla <code>models</code>.</td></tr>
+    <tr><td class="mono">POST /api/models/pull</td><td>Body: <code>{name: string}</code>. Descarga vía <code>ollama pull</code>, stream de progreso en respuesta.</td></tr>
+    <tr><td class="mono">GET /api/suites</td><td>Lista suites disponibles con su catálogo de tasks.</td></tr>
+    <tr><td class="mono">POST /api/runs</td><td>Crea una corrida. Body: <code>{models[], runtime_configs[], suites[], notes?}</code>. Encola.</td></tr>
+    <tr><td class="mono">GET /api/runs</td><td>Lista corridas con paginación y filtros.</td></tr>
+    <tr><td class="mono">GET /api/runs/{id}</td><td>Detalle de una corrida con resumen de attempts.</td></tr>
+    <tr><td class="mono">POST /api/runs/{id}/cancel</td><td>Cancela una corrida en curso (el runner respeta señal entre tasks).</td></tr>
+    <tr><td class="mono">GET /api/attempts/{id}</td><td>Detalle de un attempt con transcript completo.</td></tr>
+    <tr><td class="mono">GET /api/leaderboard</td><td>Query params: <code>suite</code>, <code>metric</code>. Devuelve ranking de modelos.</td></tr>
+    <tr><td class="mono">GET /api/compare</td><td>Query params: <code>a={model+runtime}</code>, <code>b={model+runtime}</code>. Diff campo a campo.</td></tr>
+    <tr><td class="mono">GET /api/corpus/rag</td><td>Lista documentos del corpus RAG (read-only, para inspección desde UI).</td></tr>
+  </tbody>
+</table>
+
+<h3>WebSocket</h3>
+
+<pre><code>WS /ws/runs/{run_id}
+
+Eventos emitidos por el servidor:
+  { type: "run.started",     run_id, total_attempts }
+  { type: "model.started",   model, runtime_hash }
+  { type: "task.started",    attempt_id, task_id, try_n }
+  { type: "task.token",      attempt_id, delta }         // streaming opcional
+  { type: "task.finished",   attempt_id, status, metrics }
+  { type: "model.finished",  model, summary }
+  { type: "run.finished",    run_id, summary }
+  { type: "log",             level, message }
+</code></pre>
+
+<h2 id="frontend">Frontend</h2>
+
+<p>SPA en React + Vite. Tailwind para estilos. El cliente TS contra la API se genera con <code>openapi-typescript-codegen</code> desde el OpenAPI que expone FastAPI.</p>
+
+<h3>Páginas</h3>
+
+<table class="meta-table">
+  <thead><tr><th>Ruta</th><th>Propósito</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">/</td><td><strong>Dashboard</strong>. Cards con runs recientes, modelos top por métrica, accesos rápidos.</td></tr>
+    <tr><td class="mono">/launcher</td><td><strong>Launcher</strong>. Form para configurar una corrida: select de modelos descubiertos, sliders de runtime params (num_ctx, KV cache), checklist de suites. Botón "Run".</td></tr>
+    <tr><td class="mono">/runs/:id/live</td><td><strong>Live Run</strong>. Suscribe al WebSocket. Muestra progress bar por modelo+suite, lista de attempts terminados, panel con transcript en vivo del attempt actual.</td></tr>
+    <tr><td class="mono">/runs/:id</td><td><strong>Detalle de corrida</strong>. Resumen agregado, tabla de attempts filtrable.</td></tr>
+    <tr><td class="mono">/leaderboard</td><td><strong>Leaderboard</strong>. Tabla ordenable por métrica (success rate, tps, agentic_efficiency). Filtro por suite. Selector de runtime.</td></tr>
+    <tr><td class="mono">/compare</td><td><strong>Comparación A vs B</strong>. Dos selectores (modelo+runtime), tabla side-by-side de métricas, scatter de tps vs success_rate por task.</td></tr>
+    <tr><td class="mono">/attempts/:id</td><td><strong>Detalle de attempt</strong>. Transcript navegable, métricas, veredicto del juez si aplica.</td></tr>
+    <tr><td class="mono">/corpus</td><td><strong>Corpus RAG</strong>. Lista de documentos, vista de Q&A pairs con ground truth.</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="runner">Loop principal del runner</h2>
+
+<p>El runner es el corazón de Ollympics. Vive en <code>backend/core/runner.py</code> y se ejecuta como tarea asyncio que el endpoint <code>POST /api/runs</code> dispara.</p>
+
+<pre><code>async def execute_run(run_id: int):
+    run = await db.get_run(run_id)
+    await emit("run.started", run_id=run_id, ...)
+    try:
+        for model_spec in run.config.models:
+            await prepare_model(model_spec)            # pull + set env + warmup
+            await emit("model.started", model=model_spec.name)
+            for runtime in run.config.runtime_configs:
+                await ollama.configure_runtime(runtime)
+                for suite_name in run.config.suites:
+                    suite = registry.get_suite(suite_name)
+                    for task in suite.tasks:
+                        if await db.already_completed(model_spec, runtime, task):
+                            continue
+                        await run_task_with_retries(
+                            run_id, model_spec, runtime, task, n=task.max_tries
+                        )
+                        if run.cancel_requested:
+                            return
+            await ollama.stop(model_spec.name)         # liberar VRAM
+            await emit("model.finished", model=model_spec.name)
+    finally:
+        await db.mark_run_done(run_id)
+        await emit("run.finished", run_id=run_id)
+
+
+async def run_task_with_retries(run_id, model, runtime, task, n):
+    for try_n in range(1, n + 1):
+        attempt = await execute_task(run_id, model, runtime, task, try_n)
+        if attempt.status == "success":
+            break</code></pre>
+
+<h2 id="ollama-control">Control de Ollama</h2>
+
+<p>Ollama se controla via su HTTP API en <code>localhost:11434</code> y vía subprocess para comandos de lifecycle (<code>pull</code>, <code>list</code>, <code>ps</code>, <code>stop</code>).</p>
+
+<h3>Parámetros de runtime que importan</h3>
+
+<table class="meta-table">
+  <thead><tr><th>Parámetro</th><th>Cómo se configura</th><th>Por qué importa</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">num_ctx</td><td>opción del request</td><td>Tamaño de ventana de contexto. Cuantizaciones bajas degradan con contexto grande.</td></tr>
+    <tr><td class="mono">kv_cache_type</td><td>env <code>OLLAMA_KV_CACHE_TYPE</code></td><td>f16 / q8_0 / q4_0. Reducir VRAM a costa de calidad.</td></tr>
+    <tr><td class="mono">flash_attention</td><td>env <code>OLLAMA_FLASH_ATTENTION</code></td><td>Requerido para KV cache cuantizado.</td></tr>
+    <tr><td class="mono">num_gpu</td><td>opción del request</td><td>Cuántas capas a GPU; en Apple Silicon es siempre todas.</td></tr>
+    <tr><td class="mono">temperature, seed, top_p</td><td>opciones del request</td><td>Determinismo: <code>temp=0</code>, <code>seed=42</code>.</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <div class="callout-title">KV cache cuantizado en Ollama</div>
+  <p>Para usar <code>q8_0</code> o <code>q4_0</code> en KV cache, hay que levantar Ollama con ambas envs: <code>OLLAMA_FLASH_ATTENTION=1</code> y <code>OLLAMA_KV_CACHE_TYPE=q8_0</code>. Como Ollama lee estas envs al arrancar el server, cambiar el KV cache implica reiniciar el server. El runner lo maneja: si la siguiente <code>runtime_config</code> requiere distinto KV cache, mata Ollama, re-exporta envs, lo vuelve a levantar, y reanuda.</p>
+</div>
+
+<h3>Medición de VRAM en Apple Silicon</h3>
+
+<p>No hay <code>nvidia-smi</code>. Las fuentes que sí funcionan:</p>
+<ul>
+  <li><strong><code>ollama ps</code></strong>: muestra modelos cargados y memoria que reportan ocupar. Rápido, suficiente para "peak VRAM" aproximado.</li>
+  <li><strong><code>sudo powermetrics --samplers gpu_power -n 1 -i 100</code></strong>: potencia instantánea en watts. Requiere sudo. Lo corremos como un proceso que muestrea durante el attempt.</li>
+  <li><strong><code>ioreg -r -c IOAccelerator</code></strong>: memoria GPU total y allocada (sin sudo). Útil como backup.</li>
+</ul>
+
+<h2 id="metrics">Sistema de métricas</h2>
+
+<table class="meta-table">
+  <thead><tr><th>Métrica</th><th>Definición</th><th>Captura</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">ttft_ms</td><td>Time to first token: ms desde envío del request hasta primer chunk de respuesta.</td><td>Cronómetro alrededor del primer evento de stream.</td></tr>
+    <tr><td class="mono">tps_decode</td><td>Tokens/s durante decode (excluye prefill).</td><td><code>tokens_out / (wall_time - ttft)</code>.</td></tr>
+    <tr><td class="mono">wall_time_s</td><td>Tiempo total extremo a extremo de un attempt.</td><td>Cronómetro alrededor del loop completo del attempt.</td></tr>
+    <tr><td class="mono">tokens_in / tokens_out</td><td>Reportados por Ollama en el último chunk del stream.</td><td>Parsea <code>prompt_eval_count</code> y <code>eval_count</code>.</td></tr>
+    <tr><td class="mono">peak_vram_mb</td><td>VRAM máxima ocupada por el modelo durante el attempt.</td><td>Sampler que llama <code>ollama ps</code> cada 250ms.</td></tr>
+    <tr><td class="mono">avg_watts</td><td>Potencia GPU promedio durante el attempt.</td><td>Sampler de <code>powermetrics</code> en background.</td></tr>
+    <tr><td class="mono">n_tries_used</td><td>Cuántos intentos hicieron falta para éxito.</td><td>Contador en <code>run_task_with_retries</code>.</td></tr>
+    <tr><td class="mono">tool_call_format_errors</td><td>Cantidad de tool calls con JSON inválido o nombre desconocido en el attempt.</td><td>El parser de tools cuenta y reporta.</td></tr>
+    <tr><td class="mono">success</td><td>Booleano. Lo define el verificador determinista o el juez según la task.</td><td>Por task (ver Formato de tasks).</td></tr>
+  </tbody>
+</table>
+
+<h3>Métrica derivada: agentic_efficiency</h3>
+<pre><code>agentic_efficiency = success_rate × (tps_decode / avg_tries_used)</code></pre>
+<p>Captura que un modelo rápido pero inconsistente puede ser peor que uno lento pero acertado. Se calcula en la vista, no se guarda.</p>
+
+<h2 id="judge">Sistema de juez</h2>
+
+<p>Híbrido por filosofía. Cada task declara su modo de evaluación:</p>
+
+<table class="meta-table">
+  <thead><tr><th>Modo</th><th>Cuándo usar</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">exact_match</td><td>Factoides con respuesta canónica (single string o set).</td></tr>
+    <tr><td class="mono">regex</td><td>Respuesta debe matchear patrón (ej. "número entre tags").</td></tr>
+    <tr><td class="mono">json_schema</td><td>Respuesta debe ser JSON válido contra schema declarado.</td></tr>
+    <tr><td class="mono">tool_trace</td><td>Verifica secuencia de tool calls esperada con argumentos válidos.</td></tr>
+    <tr><td class="mono">code_exec</td><td>Ejecuta código devuelto y compara contra casos de prueba.</td></tr>
+    <tr><td class="mono">llm_judge</td><td>Usa DeepSeek con una rúbrica para evaluar respuesta abierta. <strong>Único modo que requiere red.</strong></td></tr>
+    <tr><td class="mono">composite</td><td>Combinación: varios verificadores cuyo AND/OR define success.</td></tr>
+  </tbody>
+</table>
+
+<h3>Juez LLM con DeepSeek</h3>
+
+<p>Para preguntas abiertas (RAG hard, calidad de plan, coherencia de Personal Agent), se manda al juez:</p>
+
+<pre><code>system_prompt = """Eres un juez evaluador estricto. Lees un transcript de
+modelo y aplicas la rúbrica dada. Respondes SOLO con JSON:
+{"score": 0.0-1.0, "pass": bool, "rationale": "..."}
+No agregues nada más."""
+
+user_prompt = f"""
+TASK: {task.description}
+GROUND TRUTH: {task.expected}
+RUBRIC: {rubric.criteria}
+TRANSCRIPT: {attempt.transcript}
+"""</code></pre>
+
+<p>El veredicto se persiste en <code>judge_evaluations</code> junto con el costo en USD. Si se vuelve a evaluar el mismo attempt con la misma rúbrica, devuelve el cache.</p>
+
+<hr>
+
+<h2 id="suite-baseline">Suite 1 · Baseline</h2>
+
+<div class="callout blue">
+  <div class="callout-title">Propósito</div>
+  <p>Sanity check rápido. Descarta modelos rotos antes de invertir tiempo en suites largas. ~2 min por modelo.</p>
+</div>
+
+<h4>Tasks (5)</h4>
+<ul>
+  <li><code>baseline.short_generation</code>: completar una oración. Veredicto: <code>regex</code>.</li>
+  <li><code>baseline.json_simple</code>: devolver JSON con 3 campos pedidos. Veredicto: <code>json_schema</code>.</li>
+  <li><code>baseline.factual_qa</code>: pregunta factual simple. Veredicto: <code>exact_match</code>.</li>
+  <li><code>baseline.instruction_following</code>: instrucción con 3 reglas (lista numerada, en español, sin emojis). Veredicto: <code>composite</code> de 3 regex.</li>
+  <li><code>baseline.refusal</code>: pregunta ambigua mal-formada. Veredicto: <code>llm_judge</code> con rúbrica "pide clarificación en lugar de inventar".</li>
+</ul>
+
+<h4>Métricas clave</h4>
+<p><code>success_rate</code>, <code>tps_decode</code>, <code>ttft_ms</code>.</p>
+
+<h2 id="suite-tools">Suite 2 · Tool Calling Fidelity</h2>
+
+<div class="callout blue">
+  <div class="callout-title">Propósito</div>
+  <p>Capacidad fundamental para flujos agénticos. Si esto falla, todo lo demás falla.</p>
+</div>
+
+<h4>Setup</h4>
+<p>Catálogo de 6 tools mockeadas con respuestas deterministas: <code>get_weather</code>, <code>search_web</code>, <code>send_email</code>, <code>calculator</code>, <code>read_file</code>, <code>create_calendar_event</code>.</p>
+
+<h4>Tasks (8)</h4>
+<ul>
+  <li><code>tools.single_call_simple</code>: prompt requiere 1 tool call obvia.</li>
+  <li><code>tools.single_call_arg_typing</code>: prompt requiere tool con argumentos de tipos específicos (int, ISO date, enum).</li>
+  <li><code>tools.no_call_needed</code>: prompt NO necesita tools. Mide false-positive rate.</li>
+  <li><code>tools.sequential_2</code>: 2 tools en secuencia, output de la 1ra alimenta la 2da.</li>
+  <li><code>tools.sequential_3</code>: 3 tools en cadena.</li>
+  <li><code>tools.error_recovery</code>: 1ra tool devuelve error simulado; debe reintentar con args distintos.</li>
+  <li><code>tools.parallel_independent</code>: prompt pide 2 cosas independientes — debería llamar ambas en paralelo (si el modelo lo soporta).</li>
+  <li><code>tools.ambiguous_no_clarify</code>: tool call que requiere info que el usuario no dio. Debe pedir clarificación, no inventar.</li>
+</ul>
+
+<h4>Verificadores</h4>
+<p>Todos <code>tool_trace</code>. Comparan secuencia esperada de <code>(tool_name, args_schema)</code> contra lo emitido. Cuentan errores de JSON inválido por separado.</p>
+
+<h2 id="suite-rag">Suite 3 · RAG</h2>
+
+<div class="callout blue">
+  <div class="callout-title">Propósito</div>
+  <p>Capacidad de responder usando contexto recuperado, distinguir entre "está en el corpus" y "no está", y no contradecir lo recuperado.</p>
+</div>
+
+<h4>Setup</h4>
+<ul>
+  <li><strong>Corpus</strong>: documentos ficticios de una empresa imaginaria <strong>Helion Robotics</strong> (ver sección <a href="#corpus">Corpus RAG</a>).</li>
+  <li><strong>Vector store</strong>: ChromaDB local en <code>data/chroma/</code>.</li>
+  <li><strong>Embedder</strong>: <code>nomic-embed-text</code> via Ollama. Cargado en paralelo al modelo bajo evaluación.</li>
+  <li><strong>Top-k</strong>: 4 chunks por query. Tamaño de chunk: ~500 tokens con overlap de 50.</li>
+</ul>
+
+<h4>Q&A: 50 preguntas estratificadas</h4>
+<table class="meta-table">
+  <thead><tr><th>Tier</th><th>N</th><th>Tipo</th><th>Verificador</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">factual_single_doc</td><td>20</td><td>Respuesta literal en un chunk.</td><td><code>exact_match</code> (fuzzy)</td></tr>
+    <tr><td class="mono">multi_doc_synthesis</td><td>20</td><td>Requiere unir 2-3 chunks.</td><td><code>llm_judge</code> con rúbrica "menciona los N hechos clave"</td></tr>
+    <tr><td class="mono">out_of_corpus</td><td>10</td><td>Respuesta NO está en el corpus. Test de honestidad.</td><td><code>llm_judge</code> con rúbrica "modelo dice no saber, no inventa"</td></tr>
+  </tbody>
+</table>
+
+<h4>Métricas separadas</h4>
+<ul>
+  <li><strong>retrieval_recall@4</strong>: ¿el chunk correcto entró al contexto? (Anotado en el ground truth de cada Q&A.) <em>No mide el modelo, mide al embedder.</em></li>
+  <li><strong>answer_quality</strong>: el verificador anterior. <em>Mide al modelo dado contexto correcto.</em></li>
+  <li><strong>faithfulness</strong>: ¿la respuesta contradice lo recuperado? (Juez con rúbrica de fidelidad.)</li>
+  <li><strong>hallucination_on_oop</strong>: en preguntas out-of-corpus, % de veces que el modelo inventa una respuesta vs admite no saber.</li>
+</ul>
+
+<h2 id="suite-planning">Suite 4 · Planning + Execution</h2>
+
+<div class="callout blue">
+  <div class="callout-title">Propósito</div>
+  <p>Distinguir dos capacidades que suelen confundirse: <strong>planear</strong> vs <strong>ejecutar</strong>. Construido con LangGraph.</p>
+</div>
+
+<h4>Sub-modalidad 4a · Plan propio</h4>
+<p>El modelo recibe el problema, debe producir un plan estructurado, y luego ejecutarlo (paso a paso, mismo modelo).</p>
+
+<h4>Sub-modalidad 4b · Plan dado</h4>
+<p>El modelo recibe el problema + un <strong>plan canónico pre-generado por Claude</strong>. Solo ejecuta los pasos. Aísla capacidad de ejecución.</p>
+
+<div class="callout">
+  <div class="callout-title">El insight</div>
+  <p>Comparar 4a vs 4b para el mismo modelo y misma task te dice cuánto del fracaso vino de no saber planear vs no saber ejecutar. Modelos chicos a menudo pueden ejecutar bien si reciben un buen plan — esto te lo confirma con datos.</p>
+</div>
+
+<h4>Tasks (10)</h4>
+<ul>
+  <li><code>planning.refactor_function</code>: refactorizar un snippet siguiendo plan de pasos.</li>
+  <li><code>planning.web_research</code>: investigar tema con tool calls (mockeadas) y producir resumen estructurado.</li>
+  <li><code>planning.data_pipeline</code>: dada una tabla CSV, ejecutar transformaciones específicas.</li>
+  <li><code>planning.bug_fix_localization</code>: dado un bug report y código, identificar línea problemática.</li>
+  <li><code>planning.api_design</code>: diseñar endpoints REST para un caso de uso descrito.</li>
+  <li>... + 5 más cubriendo distintas variedades.</li>
+</ul>
+
+<h4>Verificador</h4>
+<p><code>composite</code> con piezas deterministas (¿produjo plan en formato esperado? ¿llamó las tools esperadas?) + <code>llm_judge</code> con rúbrica de calidad sobre el resultado final.</p>
+
+<h2 id="suite-multi">Suite 5 · Multi-agent (research)</h2>
+
+<div class="callout blue">
+  <div class="callout-title">Propósito</div>
+  <p>Cómo se comporta el modelo en un workflow multi-rol realista. Único lugar donde usamos CrewAI: la suite incluye el overhead del framework a propósito, porque es parte del costo real de este patrón.</p>
+</div>
+
+<h4>Setup</h4>
+<p>Crew de 3 agentes (mismo modelo en los tres roles):</p>
+<ul>
+  <li><strong>Researcher</strong>: investiga un tema usando tools (mockeadas: <code>search</code>, <code>fetch_doc</code>).</li>
+  <li><strong>Critic</strong>: revisa el output del researcher, marca gaps.</li>
+  <li><strong>Writer</strong>: produce el reporte final integrando feedback.</li>
+</ul>
+
+<h4>Tasks (4)</h4>
+<ul>
+  <li><code>multi.research_short</code>: tema acotado, ~3 rondas esperadas.</li>
+  <li><code>multi.research_deep</code>: tema complejo, 5+ rondas.</li>
+  <li><code>multi.research_contradiction</code>: docs con info contradictoria, requiere reconciliación.</li>
+  <li><code>multi.research_blocked</code>: tool falla intermitentemente, mide resiliencia del crew.</li>
+</ul>
+
+<h4>Métricas</h4>
+<p><code>llm_judge</code> con rúbrica de calidad del reporte final + medición de overhead: tokens totales gastados, número de mensajes entre agentes, % de mensajes que fueron "redundantes" según el juez.</p>
+
+<h2 id="suite-personal">Suite 6 · Personal Agent</h2>
+
+<div class="callout blue">
+  <div class="callout-title">Propósito</div>
+  <p>La suite que mejor refleja "¿este modelo serviría como mi asistente diario?". 20 turnos de conversación con tool use y recall probes.</p>
+</div>
+
+<h4>Setup</h4>
+<ul>
+  <li>Conversación de <strong>20 turnos</strong>. El "usuario" es simulado por DeepSeek siguiendo un guion semi-estructurado.</li>
+  <li><strong>5 tool calls esperadas</strong>, una cada ~4 turnos.</li>
+  <li><strong>Tools disponibles</strong>: <code>get_weather</code>, <code>search_web</code>, <code>add_to_calendar</code>, <code>set_reminder</code>, <code>take_note</code>.</li>
+  <li>System prompt fijo: asistente personal con persona definida.</li>
+</ul>
+
+<h4>Estructura del guion</h4>
+
+<pre><code>turno 1 (user):  saludo + presentación con un hecho clave plantado
+                 ("hola, soy Eduardo, vivo en Querétaro")
+turno 2 (user):  pregunta casual (mide ttft + naturalidad)
+turno 3 (user):  pide una tool (set_reminder con info que se requerirá después)
+turno 4-5:       conversación libre, otro hecho plantado
+turno 6:         pide otra tool (get_weather)
+turno 7-8:       conversación, plantar tercer hecho
+turno 9:         pide tool (add_to_calendar)
+turno 10:        ★ recall probe 1 — "¿en qué ciudad vivo?"
+turno 11-12:     conversación
+turno 13:        pide tool (search_web con argumentos derivados del contexto previo)
+turno 14:        ★ recall probe 2 — referencia indirecta a algo dicho en turno 7
+turno 15-17:     conversación con cambio de tema
+turno 18:        pide tool (take_note pidiendo recuperar algo recordado)
+turno 19:        ★ recall probe 3 — preguntar sobre el reminder del turno 3
+turno 20:        cierre con resumen pedido (¿qué hicimos hoy?)
+</code></pre>
+
+<h4>Métricas</h4>
+<ul>
+  <li><strong>recall@N_turns</strong>: % de recall probes contestadas correctamente. 3 probes en este guion.</li>
+  <li><strong>tool_fidelity_in_context</strong>: misma medición que Suite 2 pero con historia larga acumulada.</li>
+  <li><strong>persona_consistency</strong>: <code>llm_judge</code> evalúa si el modelo mantiene la persona del system prompt sin contradecirse.</li>
+  <li><strong>ttft_drift</strong>: comparar <code>ttft_ms</code> turno 2 vs turno 18. Mide degradación con contexto creciente.</li>
+  <li><strong>tps_drift</strong>: análogo para <code>tps_decode</code>.</li>
+  <li><strong>closing_recall</strong>: el resumen del turno 20 — ¿menciona N de los hitos clave?</li>
+</ul>
+
+<h4>Por qué importa el simulador de usuario</h4>
+<p>Si el script fuera 100% determinista, el modelo podría aprender el patrón. Usar DeepSeek como simulador introduce variabilidad realista pero respeta los hitos obligatorios. El simulador tiene <em>su propio</em> guion con instrucciones tipo: "en el turno 10, sin importar lo que el modelo haya dicho antes, pregunta en qué ciudad vives".</p>
+
+<hr>
+
+<h2 id="task-format">Formato de tasks (YAML)</h2>
+
+<p>Cada task vive en <code>tasks/&lt;suite&gt;/&lt;task_id&gt;.yaml</code>. Schema versionado.</p>
+
+<pre><code># tasks/baseline/json_simple.yaml
+task_id: baseline.json_simple
+version: 1
+suite: baseline
+description: Devuelve un JSON con 3 campos sobre el usuario.
+max_tries: 3
+timeout_s: 30
+
+prompt:
+  system: "Responde SOLO con JSON válido."
+  user: "Crea un objeto con campos name (string), age (int), city (string) para un usuario ficticio mexicano."
+
+verifier:
+  type: json_schema
+  schema:
+    type: object
+    required: [name, age, city]
+    properties:
+      name: { type: string }
+      age: { type: integer }
+      city: { type: string }
+
+metrics_focus: [tps_decode, ttft_ms, success]
+</code></pre>
+
+<pre><code># tasks/rag/multi_doc_002.yaml
+task_id: rag.multi_doc_002
+version: 1
+suite: rag
+description: Pregunta que requiere unir información de 2 documentos del corpus.
+max_tries: 2
+timeout_s: 60
+
+context:
+  rag_query: "¿Qué hace el modelo Helion-X3 cuando detecta sobrecarga térmica?"
+  expected_chunks: [doc_manual_helion_x3:chunk_07, doc_safety_protocols:chunk_03]
+
+prompt:
+  system: |
+    Responde usando solo el contexto recuperado. Si la respuesta no está en
+    el contexto, di explícitamente "no lo sé".
+  user_template: |
+    CONTEXTO:
+    {{ context }}
+
+    PREGUNTA: {{ question }}
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "(modo seguro|safe mode|protocolo de emergencia)"
+      flags: i
+    - type: llm_judge
+      rubric: rag_open_answer_v1
+      pass_threshold: 0.7
+
+ground_truth:
+  key_facts:
+    - "Entra en modo seguro"
+    - "Notifica al operador"
+    - "Reduce potencia al 20%"
+</code></pre>
+
+<h2 id="corpus">Corpus RAG · generación y Q&A</h2>
+
+<p>El corpus es ficticio para evitar contaminación con pre-training data: <strong>Helion Robotics</strong>, empresa imaginaria que fabrica robots industriales. Cuatro documentos:</p>
+
+<table class="meta-table">
+  <thead><tr><th>Documento</th><th>Páginas</th><th>Contenido</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">helion_manual_x3.md</td><td>~12</td><td>Manual técnico del modelo Helion-X3: specs, modos de operación, mantenimiento.</td></tr>
+    <tr><td class="mono">helion_hr_policy.md</td><td>~8</td><td>Políticas de RR.HH.: vacaciones, viajes, beneficios.</td></tr>
+    <tr><td class="mono">helion_api_changelog.md</td><td>~6</td><td>Changelog de la API pública con 15+ versiones.</td></tr>
+    <tr><td class="mono">helion_safety_protocols.md</td><td>~5</td><td>Protocolos de emergencia y seguridad.</td></tr>
+  </tbody>
+</table>
+
+<h3>Prompts versionados para regenerar</h3>
+
+<p>En <code>tasks/rag/prompts/</code> viven los Jinja2 templates. Esto permite regenerar el corpus con otro LLM o variarlo.</p>
+
+<pre><code># tasks/rag/prompts/generate_corpus.j2
+Eres un escritor técnico. Genera un documento ficticio para una empresa
+inventada llamada {{ company_name }}. El documento es de tipo {{ doc_type }}.
+
+Requisitos:
+- Coherencia interna: nombres de productos, números de versión, fechas
+  consistentes a lo largo del documento.
+- Específico: datos concretos (números, fechas, nombres) en abundancia
+  para que sea evaluable.
+- Estructura: usa headings markdown, listas, y tablas cuando aplique.
+- Longitud: aproximadamente {{ word_count }} palabras.
+- Tono: {{ tone }}.
+
+Devuelve SOLO el contenido del documento, sin meta-comentarios.
+</code></pre>
+
+<pre><code># tasks/rag/prompts/generate_qa.j2
+Eres un evaluador de RAG. Dado el documento, genera {{ n }} preguntas
+de tipo {{ tier }}.
+
+Reglas por tier:
+- factual_single_doc: respuesta literal en una sola sección. Una sola
+  respuesta correcta y verificable.
+- multi_doc_synthesis: requiere combinar info de al menos 2 secciones.
+- out_of_corpus: pregunta plausible cuya respuesta NO está en el
+  documento. Debe sonar razonable pero ser inverificable.
+
+Para cada pregunta devuelve JSON:
+{
+  "question": "...",
+  "expected_answer": "..." | null,
+  "key_facts": [...],         // hechos que la respuesta debe contener
+  "source_chunks": ["..."],   // anchors de las secciones origen
+  "tier": "..."
+}
+
+DOCUMENTO:
+{{ document }}
+</code></pre>
+
+<h2 id="seed-models">Modelos seed</h2>
+
+<p>Set inicial recomendado para el primer benchmark. Cubre distintos ejes de comparación:</p>
+
+<table class="meta-table">
+  <thead><tr><th>Modelo</th><th>Tamaño</th><th>Backend</th><th>Eje que ilumina</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">gemma4:e2b-mlx</td><td>~7 GB</td><td>MLX</td><td>baseline pequeña</td></tr>
+    <tr><td class="mono">gemma4:e4b-mlx</td><td>~10 GB</td><td>MLX</td><td>vs e2b → escalado dentro de familia</td></tr>
+    <tr><td class="mono">gemma4:12b-mlx</td><td>10 GB</td><td>MLX</td><td>salto a "mid"</td></tr>
+    <tr><td class="mono">qwen3.6:27b-mlx</td><td>19 GB</td><td>MLX</td><td>"sweet spot" para 64GB</td></tr>
+    <tr><td class="mono">qwen3.6:35b-mlx</td><td>21 GB</td><td>MLX</td><td>vs 27b → ¿vale la pena el salto?</td></tr>
+    <tr><td class="mono">lfm2:24b</td><td>14 GB</td><td>GGUF</td><td>arquitectura LFM (Liquid Foundation Models) vs Transformer</td></tr>
+    <tr><td class="mono">devstral-small-2:24b</td><td>15 GB</td><td>GGUF</td><td>coding-tuned vs general-purpose en suite de tools y planning</td></tr>
+    <tr><td class="mono">liquidai/lfm2.5-1.2b</td><td>1.2 GB</td><td>GGUF</td><td>baseline de bajo costo: ¿qué tan bien funciona un "tiny"?</td></tr>
+  </tbody>
+</table>
+
+<h2 id="cli">CLI</h2>
+
+<pre><code># Levantar el server (FastAPI + frontend en dev mode)
+oly serve --port 8000
+
+# Listar modelos descubiertos
+oly models list
+
+# Disparar una corrida headless
+oly run \
+  --models qwen3.6:27b-mlx,gemma4:12b-mlx \
+  --suites baseline,tool_calling,rag \
+  --num-ctx 8192 \
+  --kv-cache f16
+
+# Sweep: matriz de cuantizaciones de KV cache
+oly sweep \
+  --model qwen3.6:27b-mlx \
+  --kv-cache f16,q8_0,q4_0 \
+  --suite all
+
+# Comparar
+oly compare \
+  --a qwen3.6:27b-mlx@runtime=default \
+  --b qwen3.6:35b-mlx@runtime=default
+
+# Ver leaderboard en terminal
+oly leaderboard --suite tool_calling --metric success_rate
+
+# Generar corpus RAG con un LLM
+oly corpus generate --provider deepseek
+
+# Importar / inspeccionar
+oly results show --run-id 17
+oly results export --format csv --out resultados.csv
+</code></pre>
+
+<hr>
+
+<h2 id="phases">Roadmap por fases</h2>
+
+<p>Cada fase entrega algo usable. La aprobación de una fase es requisito para pasar a la siguiente.</p>
+
+<table class="meta-table">
+  <thead><tr><th>Fase</th><th>Entrega</th><th>Estado</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td>Skeleton: <code>uv</code> init, FastAPI hello, React vacío, schema SQLite, control básico de Ollama (pull/run/stop), CLI <code>oly</code> con <code>models list</code> funcionando.</td><td><span class="badge next">siguiente</span></td></tr>
+    <tr><td>1</td><td>Suite Baseline funcionando end-to-end. <code>oly run --suite baseline</code> guarda en DB. Comando <code>oly results show</code>.</td><td></td></tr>
+    <tr><td>2</td><td>Sistema completo de métricas: ttft, tps, vram (vía <code>ollama ps</code>), watts (vía <code>powermetrics</code>). Sampler en background.</td><td></td></tr>
+    <tr><td>3</td><td>Suite Tool Calling con verificadores <code>tool_trace</code>.</td><td></td></tr>
+    <tr><td>4</td><td>Suite RAG: corpus generado (los 4 docs), 50 Q&A, ChromaDB + nomic-embed-text, juez DeepSeek opcional.</td><td></td></tr>
+    <tr><td>5</td><td>Frontend MVP: páginas <code>/launcher</code>, <code>/runs</code>, <code>/runs/:id</code>, tabla de resultados. Sin live aún.</td><td></td></tr>
+    <tr><td>6</td><td>Live runs vía WebSocket + página <code>/leaderboard</code> + página <code>/compare</code>.</td><td></td></tr>
+    <tr><td>7</td><td>Suite Planning 4a y 4b con LangGraph. Planes canónicos pre-generados para 4b.</td><td></td></tr>
+    <tr><td>8</td><td>Suite Personal Agent con simulador de usuario en DeepSeek y recall probes.</td><td></td></tr>
+    <tr><td>9</td><td>Suite Multi-agent (research) con CrewAI.</td><td></td></tr>
+    <tr><td>10</td><td><code>oly sweep</code>: matriz automática de cuantizaciones y KV cache, reportes de degradación.</td><td></td></tr>
+  </tbody>
+</table>
+
+<h2 id="decisions">Decisiones de diseño</h2>
+
+<details class="collapsible">
+  <summary>¿Por qué no correr modelos en paralelo?</summary>
+  <div class="content">
+    <p>La VRAM unificada de Apple Silicon (y la VRAM dedicada de la mayoría de GPUs) no permite cargar múltiples modelos grandes sin que peleen por recursos. Aún si caben, las mediciones de tps se contaminan porque comparten ancho de banda de memoria. La serialidad es una feature, no un bug. El paralelismo de Ollympics está en el dashboard: una corrida puede tomar horas, pero el análisis después es instantáneo.</p>
+  </div>
+</details>
+
+<details class="collapsible">
+  <summary>¿Por qué SQLite y no Postgres desde el día 1?</summary>
+  <div class="content">
+    <p>Para un usuario único, una máquina, datos en MB-bajos GB: SQLite es perfecto. Cero ops, cero containers, archivos fáciles de backup. Migración a Postgres es trivial con SQLAlchemy si crece (ej. para reportar resultados desde varias máquinas a un dashboard centralizado).</p>
+  </div>
+</details>
+
+<details class="collapsible">
+  <summary>¿Por qué LangGraph + CrewAI en lugar de uno solo?</summary>
+  <div class="content">
+    <p>LangGraph es más declarativo y permite mediciones limpias (cada nodo del grafo es una unidad medible). CrewAI introduce su propio prompting y reglas internas que son parte del costo real del patrón multi-rol. Queremos medir ambos: <em>"cómo se comporta este modelo en un grafo controlado"</em> (LangGraph, suite Planning + Personal Agent) y <em>"cómo se comporta en un workflow multi-rol idiomático"</em> (CrewAI, suite Research). Conclusiones distintas, ambas válidas.</p>
+  </div>
+</details>
+
+<details class="collapsible">
+  <summary>¿Por qué un corpus RAG ficticio en lugar de uno real?</summary>
+  <div class="content">
+    <p>Si usamos docs reales (ej. docs de FastAPI), el modelo probablemente las vio durante pre-training. La señal del RAG se contamina: el modelo puede contestar bien sin haber leído el contexto recuperado. Un corpus ficticio nos garantiza que la respuesta correcta SOLO puede venir del retrieval — lo cual aísla la capacidad RAG.</p>
+  </div>
+</details>
+
+<details class="collapsible">
+  <summary>¿Por qué un juez externo (DeepSeek) y no un modelo local?</summary>
+  <div class="content">
+    <p>Usar otro modelo local como juez sesga las evaluaciones a favor de modelos similares al juez. Un modelo externo fuerte (DeepSeek-V3 o GPT-4 o Claude) sirve como árbitro neutral. DeepSeek se eligió por costo bajo y calidad alta. El juez es opt-in por task: tareas con verificador determinista NO llaman al juez.</p>
+  </div>
+</details>
+
+<details class="collapsible">
+  <summary>¿Por qué versionar las tasks?</summary>
+  <div class="content">
+    <p>Cualquier cambio sustantivo en un verificador, prompt o ground truth invalida los resultados anteriores. Si <code>task_id</code> queda igual pero <code>version</code> cambia, los attempts viejos siguen siendo válidos en su versión, y los nuevos se recalculan automáticamente. Sin esto, modificar un test corrompería tu histórico silenciosamente.</p>
+  </div>
+</details>
+
+<details class="collapsible">
+  <summary>¿Por qué warmup obligatorio?</summary>
+  <div class="content">
+    <p>La primera inferencia tras cargar el modelo es órdenes de magnitud más lenta (carga a VRAM, compilación de kernels). Esa medición contamina cualquier promedio. Un warmup descartable de 1 prompt corto resuelve el problema y refleja el escenario real (un usuario real interactúa con un modelo ya cargado).</p>
+  </div>
+</details>
+
+<h2 id="open-questions">Preguntas abiertas</h2>
+
+<p>Cosas que vale la pena decidir cuando lleguemos a implementar la fase correspondiente:</p>
+
+<ul>
+  <li><strong>Streaming en el frontend</strong>: ¿queremos ver los tokens fluir en vivo durante <code>/runs/:id/live</code>, o solo el progreso por attempt? Streaming es bonito pero agrega complejidad en el WS.</li>
+  <li><strong>Almacenamiento de transcripts</strong>: los transcripts pueden ser largos (~50KB cada uno en Personal Agent). En SQLite caben sin drama, pero podemos comprimir con zstd a futuro.</li>
+  <li><strong>Comparación A vs B vs C</strong>: el endpoint <code>/api/compare</code> arranca soportando 2; ¿lo extendemos a N modelos en el v1 del frontend o esperamos a v2?</li>
+  <li><strong>Costo de DeepSeek</strong>: ¿queremos un budget cap por corrida que detenga el uso del juez si se pasa? Probablemente sí — implementación simple en <code>core/judge.py</code>.</li>
+  <li><strong>Multi-host</strong>: si en el futuro queremos correr bench en otra máquina y reportar al mismo dashboard, ¿migramos a Postgres + API auth, o un sync de SQLite es suficiente?</li>
+</ul>
+
+<hr>
+
+<p style="color: var(--text-dim); font-size: 13px; margin-top: 60px;">
+Blueprint versión 1.0 · Ollympics · documentación viva — actualizar a medida que avanzan las fases.
+</p>
+
+</main>
+
+</div>
+
+<script>
+  // Active section highlighting
+  const sections = document.querySelectorAll('main h2[id]');
+  const links = document.querySelectorAll('nav.toc a');
+  const linkMap = {};
+  links.forEach(l => { linkMap[l.getAttribute('href').slice(1)] = l; });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const id = e.target.id;
+        if (linkMap[id]) linkMap[id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -65% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

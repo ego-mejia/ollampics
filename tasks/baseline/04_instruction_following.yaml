@@ -1,0 +1,28 @@
+task_id: baseline.instruction_following
+version: 1
+suite: baseline
+description: Seguir tres restricciones simultáneas en la respuesta.
+max_tries: 2
+timeout_s: 60
+
+prompt:
+  system: "Sigue las instrucciones al pie de la letra."
+  user: |
+    Lista 3 países en una lista numerada (1. ..., 2. ..., 3. ...).
+    Cada país debe ser de Sudamérica.
+    No agregues comentarios ni introducción.
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "^\\s*1\\.\\s*\\w+"
+      flags: m
+    - type: regex
+      pattern: "^\\s*2\\.\\s*\\w+"
+      flags: m
+    - type: regex
+      pattern: "^\\s*3\\.\\s*\\w+"
+      flags: m
+
+metrics_focus: [success]

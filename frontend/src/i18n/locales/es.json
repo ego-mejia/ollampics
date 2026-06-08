@@ -1,0 +1,238 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "dashboard": "Dashboard",
+    "launcher": "Launcher",
+    "leaderboard": "Leaderboard",
+    "tests": "Tests",
+    "compare": "Comparar"
+  },
+  "common": {
+    "loading": "cargando…",
+    "error": "Error",
+    "back": "Volver",
+    "all": "Todas",
+    "size": "Tamaño",
+    "name": "Nombre",
+    "status": "Status",
+    "actions": "Acciones"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Modelos instalados en Ollama y corridas recientes.",
+    "newRun": "+ Nueva corrida",
+    "chartTitle": "Performance general de modelos",
+    "chartSub": "Success rate ponderado a través de todas las suites y configs de runtime",
+    "chartEmpty": "Aún no hay corridas. Lanza una para ver el chart llenarse.",
+    "modelsTitle": "Modelos en Ollama",
+    "modelsEmpty": "sin modelos · usa {{cmd}}",
+    "runsTitle": "Corridas recientes",
+    "runsEmpty": "sin corridas · usa el Launcher o {{cmd}}",
+    "cols": {
+      "id": "ID",
+      "created": "Creada",
+      "models": "Modelos",
+      "suites": "Suites",
+      "success": "Success",
+      "status": "Status"
+    },
+    "deleteRun": "Eliminar corrida",
+    "deleting": "Eliminando…",
+    "confirmDelete": "¿Eliminar la corrida #{{id}}? Esto borra sus attempts permanentemente y no se puede deshacer."
+  },
+  "launcher": {
+    "title": "Launcher",
+    "subtitle": "Configura una corrida. Se ejecuta en background; verás el progreso en la página del run.",
+    "modelsLabel": "Modelos",
+    "modelsSelected": "{{count}} seleccionados",
+    "suitesLabel": "Suites",
+    "suitesSelected": "{{count}} seleccionadas",
+    "numCtx": "num_ctx",
+    "kvCache": "KV cache",
+    "notes": "Notas (opcional)",
+    "notesPlaceholder": "ej. baseline con KV cache reducido",
+    "launching": "Lanzando…",
+    "launch": "Lanzar corrida",
+    "tasks": "{{count}} tasks"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "Ranking de modelos por suite, agregando el mejor attempt por task.",
+    "suite": "Suite",
+    "sortBy": "Ordenar por",
+    "model": "Modelo",
+    "quantization": "Cuantización",
+    "allModels": "Todos los modelos",
+    "allQuants": "Todas las variantes",
+    "noSuiteSelected": "Selecciona una suite (o Todas) para ver resultados.",
+    "allSuitesTitle": "Todas las suites",
+    "allSuitesDesc": "Ranking global agregando todas las suites. Usa los filtros arriba para acotar por modelo o cuantización.",
+    "chartTitle": "Performance por modelo",
+    "empty": "sin datos para este filtro",
+    "cols": {
+      "rank": "#",
+      "model": "Modelo",
+      "suite": "Suite",
+      "successRate": "Success rate",
+      "tps": "tps",
+      "ttft": "ttft",
+      "tries": "tries",
+      "vram": "vram"
+    }
+  },
+  "run": {
+    "title": "Run",
+    "live": "EN VIVO",
+    "attempts": "Attempts",
+    "successes": "Successes",
+    "successRate": "Success rate",
+    "waitingFirst": "esperando primer attempt…",
+    "noAttempts": "sin attempts",
+    "cols": {
+      "model": "Modelo",
+      "task": "Task",
+      "try": "Try",
+      "status": "Status",
+      "tps": "tps",
+      "ttft": "ttft",
+      "tokIn": "tok_in",
+      "tokOut": "tok_out",
+      "vram": "vram",
+      "watts": "watts",
+      "wallS": "wall_s"
+    }
+  },
+  "tests": {
+    "title": "Tests",
+    "subtitle": "Suites de benchmark disponibles en el harness.",
+    "tasksCount": "{{count}} tasks",
+    "withCorpus": "con corpus",
+    "openSuite": "Abrir",
+    "tasksInSuite": "Tasks de esta suite",
+    "ragCorpusTitle": "Documentos del corpus",
+    "ragCorpusEmpty": "Aún no se ha generado corpus. Usa el botón \"Generar corpus\" más abajo.",
+    "ragPromptsTitle": "Prompts utilizados para generar el corpus",
+    "ragPromptsHint": "Estos archivos markdown manejan el agente LangGraph. Edítalos en tasks/rag/prompts/ para personalizar.",
+    "generateBtn": "Generar corpus",
+    "regenerateBtn": "Regenerar (sobrescribir)",
+    "generating": "Generando en background…",
+    "generatedAt": "Última generación: {{when}}",
+    "viewDocument": "Ver",
+    "viewPrompt": "Ver prompt",
+    "hide": "Ocultar",
+    "linesCount": "{{count}} líneas",
+    "suites": {
+      "baseline": {
+        "label": "Baseline",
+        "description": "Sanity check rápido: generación corta, JSON, factual, seguimiento de instrucciones, formato de lista. Primer filtro para descartar modelos rotos."
+      },
+      "tool_calling": {
+        "label": "Tool Calling",
+        "description": "¿El modelo elige la tool correcta, con args válidos, en el orden correcto? 6 tools mockeadas, 8 tasks cubriendo llamadas únicas, secuencias, recuperación de errores y ambigüedad."
+      },
+      "rag": {
+        "label": "RAG",
+        "description": "Retrieval-Augmented Generation sobre un corpus ficticio (Helion Robotics). 50 Q&A en 3 tiers: factual de un solo doc, síntesis multi-doc, y honestidad fuera del corpus."
+      },
+      "planning": {
+        "label": "Planning",
+        "description": "Planeación + ejecución con LangGraph. Cada task corre en modo 4a (plan propio) y 4b (plan dado) para aislar la capacidad de planear de la de ejecutar."
+      },
+      "personal_agent": {
+        "label": "Personal Agent",
+        "description": "Conversación de 20 turnos con tool calls intermedias y recall probes. Mide memoria de contexto, fidelidad de tools en historia larga, y drift de latencia."
+      },
+      "multi_agent": {
+        "label": "Multi-agent",
+        "description": "Workflow multi-rol Researcher → Critic → Writer vía LangGraph. Mide la colaboración entre roles y la calidad del reporte final sintetizado."
+      }
+    },
+    "tasksDescription": "Abre una suite para ver sus tasks individuales y (para RAG) el corpus + los prompts que se usaron para generarlo."
+  },
+  "compare": {
+    "title": "Comparar A vs B",
+    "subtitle": "Métricas side-by-side de dos corridas. Útil para sweeps de cuantización, configs de KV cache, o comparar modelos sobre la misma suite.",
+    "runA": "Run A",
+    "runB": "Run B",
+    "pickHint": "Elige una corrida reciente",
+    "pickPair": "Elige dos corridas arriba para comparar.",
+    "sameRun": "A y B deben ser corridas distintas.",
+    "noShared": "No hay tasks compartidas entre estas corridas.",
+    "bothPass": "Ambas pasan",
+    "aOnly": "Solo {{id}}",
+    "bOnly": "Solo {{id}}",
+    "totalTasks": "Tasks totales",
+    "cols": {
+      "task": "Task",
+      "suite": "Suite"
+    }
+  },
+  "home": {
+    "heroTagline": "Benchmarkea tus modelos de IA locales como un decatlón olímpico.",
+    "heroSubtitle": "OLLAMPICS corre tus modelos de Ollama a través de tareas agénticas — tool calling, RAG, conversación multi-turno, planning, workflows multi-agente — y te da una comparación limpia de cómo se comporta cada modelo.",
+    "ctaLaunch": "Lanza tu primera corrida",
+    "ctaDashboard": "Explora el dashboard",
+    "whatIsTitle": "¿Qué es OLLAMPICS?",
+    "whatIs1": "Un harness de benchmarking para LLMs locales. Cada modelo compite en las mismas pruebas; los resultados se guardan en SQLite y se visualizan en esta app. Pensado para gente que corre Ollama localmente y quiere datos duros de qué modelo sirve para qué.",
+    "whatIs2": "Cada corrida captura throughput, tiempo al primer token, VRAM, tokens, reintentos y un veredicto success/fail por task — para que compares cuantizaciones, modelos, o configs de runtime manzanas con manzanas.",
+    "howTitle": "Cómo usarlo (3 pasos)",
+    "howStep1Title": "1 · Descarga modelos con Ollama",
+    "howStep1": "Explora la librería de Ollama y pull los modelos que quieras probar. Lo que Ollama pueda correr, OLLAMPICS puede benchmarkear.",
+    "howStep1CTA": "ollama.com/search",
+    "howStep1Code": "ollama pull qwen3.6:27b-mlx",
+    "howStep2Title": "2 · Elige una suite de tests",
+    "howStep2": "Abre Tests para ver las seis suites disponibles — Baseline (sanity check), Tool Calling, RAG, Planning, Personal Agent, Multi-agent. Cada card explica qué mide.",
+    "howStep3Title": "3 · Lanza una corrida",
+    "howStep3": "Desde Launcher, marca los modelos y suites que quieras, define num_ctx y KV cache, y dale Lanzar. Verás el progreso en vivo, y después el Leaderboard ranquea los modelos.",
+    "metricsTitle": "Qué significan las métricas",
+    "metrics": {
+      "tps": {
+        "name": "tps (tokens/s)",
+        "desc": "Throughput de decode — tokens generados por segundo durante la fase de respuesta. Más alto = output más rápido."
+      },
+      "ttft": {
+        "name": "ttft (ms)",
+        "desc": "Tiempo al primer token. Es el tiempo de reacción del modelo. Más bajo = más responsivo."
+      },
+      "tokensIn": {
+        "name": "tok_in",
+        "desc": "Tokens del prompt que el modelo procesó para esta task."
+      },
+      "tokensOut": {
+        "name": "tok_out",
+        "desc": "Tokens de salida que el modelo produjo."
+      },
+      "vram": {
+        "name": "vram",
+        "desc": "VRAM pico (MB) que el modelo ocupó mientras corría. Reportado por ollama ps."
+      },
+      "watts": {
+        "name": "watts",
+        "desc": "Potencia GPU promedio (opt-in vía powermetrics, requiere sudo en macOS)."
+      },
+      "successRate": {
+        "name": "success_rate",
+        "desc": "Fracción de tasks que el modelo pasó. Una task pasa cuando su verificador (regex / schema / juez LLM) devuelve OK."
+      },
+      "tries": {
+        "name": "tries",
+        "desc": "Intentos promedio que el modelo necesitó para pasar (algunas tasks permiten retries al fallar)."
+      }
+    },
+    "addTestsTitle": "Agregar tus propios tests",
+    "addTests1": "Los tests son archivos YAML en tasks/<suite>/. Suelta un YAML nuevo (o copia uno existente) con prompt, verifier y max_tries — se descubre automáticamente en la próxima corrida.",
+    "addTests2": "Para RAG específicamente, el corpus lo genera un agente (LangGraph + DeepSeek). Ve a Tests → RAG, haz click en Generar corpus, edita los prompts en disco para ajustar qué produce el agente.",
+    "addModelsTitle": "Agregar más modelos",
+    "addModels1": "Todos los modelos vienen de tu instalación local de Ollama. Explora el catálogo, descarga lo que quieras, y reabre OLLAMPICS — los modelos descubiertos aparecen automáticamente en el Launcher.",
+    "addModelsCTA": "Explora modelos en ollama.com/search →"
+  },
+  "theme": {
+    "toLight": "Cambiar a modo claro",
+    "toDark": "Cambiar a modo oscuro"
+  },
+  "lang": {
+    "switchTo": "Cambiar idioma a {{name}}",
+    "english": "Inglés",
+    "spanish": "Español"
+  }
+}

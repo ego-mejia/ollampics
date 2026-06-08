@@ -1,0 +1,34 @@
+task_id: tools.single_call_simple
+version: 1
+suite: tool_calling
+description: Una sola tool call obvia (clima de una ciudad).
+max_tries: 2
+timeout_s: 120
+
+prompt:
+  system: |
+    Eres un asistente con acceso a herramientas. Usa las tools cuando lo
+    necesites para responder. Sé conciso.
+  user: "¿Qué tiempo hace en Tokio? Dame solo la temperatura y condición."
+
+tools:
+  enabled: [get_weather, search_web]
+  max_turns: 4
+
+verifier:
+  type: tool_trace
+  expected_calls:
+    - tool: get_weather
+      args_schema:
+        type: object
+        required: [city]
+        properties:
+          city:
+            type: string
+            enum: [Tokio, Tokyo]
+  final_message:
+    type: regex
+    pattern: "(soleado|nublado|lluvioso|despejado|ventoso|°C|grados|temp)"
+    flags: i
+  allow_extra_calls: false
+  max_format_errors: 0

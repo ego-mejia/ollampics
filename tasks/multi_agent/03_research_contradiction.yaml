@@ -1,0 +1,30 @@
+task_id: multi.research_contradiction
+version: 1
+suite: multi_agent
+description: Tema donde existen posturas contradictorias; el crew debe reconciliar.
+max_tries: 1
+timeout_s: 360
+
+prompt:
+  system: ""
+  user: |
+    El consenso sobre si los benchmarks sintéticos de LLMs son útiles está
+    dividido: algunos los consideran imprescindibles para iteración rápida,
+    otros los acusan de no medir capacidades reales. Investiga ambos lados
+    y produce una conclusión balanceada con criterios claros.
+
+multi_agent:
+  iterations: 2
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "(a favor|pro|argumento.{0,15}favor|ventaja)"
+      flags: i
+    - type: regex
+      pattern: "(en contra|crítica|cr[íi]tic|desventaja|limitaci)"
+      flags: i
+    - type: regex
+      pattern: "(conclusi|recomendaci|balance)"
+      flags: i

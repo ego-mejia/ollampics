@@ -1,0 +1,43 @@
+task_id: planning.bug_localization
+version: 1
+suite: planning
+description: Identificar el bug en una función dada con un caso de prueba que falla.
+max_tries: 1
+timeout_s: 120
+
+prompt:
+  system: "Eres un debugger. Encuentras bugs analizando código paso a paso."
+  user: |
+    El siguiente código debería devolver el promedio de la lista pero falla.
+    Identifica el bug e indica el número de línea exacto.
+
+    ```python
+    def average(nums):           # línea 1
+        if not nums:             # línea 2
+            return 0             # línea 3
+        total = 0                # línea 4
+        for n in nums:           # línea 5
+            total += n           # línea 6
+        avg = total / len(nums) - 1  # línea 7
+        return avg               # línea 8
+    ```
+
+    Caso de prueba que falla: `average([2, 4, 6])` devuelve 3.0 pero debería ser 4.0.
+
+canonical_plan:
+  - "Lee el propósito de la función y el caso de prueba."
+  - "Traza el cálculo línea por línea con los valores 2, 4, 6."
+  - "Identifica dónde diverge el resultado de lo esperado."
+  - "Reporta el número de línea y la corrección sugerida."
+
+max_steps: 5
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "(l[íi]nea\\s*7|line\\s*7|\\b7\\b)"
+      flags: i
+    - type: regex
+      pattern: "(- 1|menos 1|\\(.*\\)|paréntesis|precedence|operator|orden|subtra|resta)"
+      flags: i

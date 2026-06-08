@@ -1,0 +1,35 @@
+task_id: planning.research_workflow
+version: 1
+suite: planning
+description: Sintetizar criterios para evaluar la confiabilidad de un benchmark de LLMs.
+max_tries: 1
+timeout_s: 180
+
+prompt:
+  system: "Eres un investigador en evaluación de modelos."
+  user: |
+    Investiga y sintetiza: ¿qué hace que un benchmark de LLMs sea confiable?
+    Identifica al menos 3 ejes (ej. reproducibilidad, ausencia de leakage,
+    calibración), para cada uno da un ejemplo concreto de cómo puede fallar
+    en la práctica y cómo mitigarlo.
+
+canonical_plan:
+  - "Identifica 3 ejes ortogonales de confiabilidad de un benchmark."
+  - "Para cada eje, describe una forma concreta en que falla en la práctica."
+  - "Para cada falla, propone una mitigación específica."
+  - "Resume los tradeoffs principales entre los 3 ejes."
+
+max_steps: 6
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "(reproducib|determini|seed)"
+      flags: i
+    - type: regex
+      pattern: "(leakage|contamin|train.{0,10}test|pre.?training)"
+      flags: i
+    - type: regex
+      pattern: "(calibrac|sesgo|sample size|tama[ñn]o de muestra|bias)"
+      flags: i

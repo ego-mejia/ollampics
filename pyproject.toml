@@ -1,0 +1,49 @@
+[project]
+name = "ollympics"
+version = "0.1.0"
+description = "Benchmark harness for local LLMs on agentic tasks."
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.136.3",
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "langchain-openai>=1.2.2",
+    "langgraph>=1.2.4",
+    "numpy>=2.4.6",
+    "pydantic>=2.13.4",
+    "pydantic-settings>=2.14.1",
+    "pyyaml>=6.0.3",
+    "rich>=15.0.0",
+    "sqlalchemy>=2.0.50",
+    "typer>=0.26.7",
+    "uvicorn[standard]>=0.49.0",
+]
+
+[project.scripts]
+oly = "ollympics.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ollympics"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.15.16",
+]

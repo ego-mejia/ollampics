@@ -1,0 +1,48 @@
+task_id: planning.refactor_function
+version: 1
+suite: planning
+description: Refactorizar una función Python con varias responsabilidades mezcladas.
+max_tries: 1
+timeout_s: 180
+
+prompt:
+  system: "Eres un ingeniero senior. Devuelves código Python limpio, con type hints."
+  user: |
+    Refactoriza esta función Python:
+
+    ```python
+    def process(data):
+        result = []
+        for x in data:
+            if x['type'] == 'A':
+                v = x['val'] * 2 + 5
+                result.append({'name': x['name'].lower(), 'value': v})
+            elif x['type'] == 'B':
+                v = x['val'] * 3 - 2
+                result.append({'name': x['name'].lower(), 'value': v})
+        print(f"Processed {len(result)} items")
+        return result
+    ```
+
+    Aplica: extrae helpers, type hints, sin print, código idiomático.
+
+canonical_plan:
+  - "Identifica responsabilidades mezcladas (transformación + logging) y sepáralas."
+  - "Extrae una función auxiliar `normalize(x)` que calcule el value según el type."
+  - "Reescribe `process` usando una list comprehension y la nueva auxiliar."
+  - "Agrega type hints en argumentos y return types."
+
+max_steps: 6
+
+verifier:
+  type: composite
+  all_of:
+    - type: regex
+      pattern: "def\\s+\\w+\\([^)]*:.+\\)\\s*->"
+      flags: s
+    - type: regex
+      pattern: "def\\s+(normalize|transform|compute|map|build)"
+      flags: i
+    - type: regex
+      pattern: "\\[.+for\\s+\\w+\\s+in"
+      flags: s
