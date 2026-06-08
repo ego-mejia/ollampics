@@ -1,166 +1,168 @@
 # OLLAMPICS
 
+**English** · **[Español](README.es.md)**
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/) [![uv](https://img.shields.io/badge/uv-managed-purple)](https://docs.astral.sh/uv/) [![Ollama](https://img.shields.io/badge/runs%20on-Ollama-black)](https://ollama.com)
 
 > Benchmark your local AI models like an Olympic decathlon.
 
-OLLAMPICS corre tus modelos de Ollama a través de pruebas agénticas — tool calling, RAG, conversación multi-turno, planning, multi-agent — y te da una comparación limpia y reproducible de cómo se comporta cada modelo en tu hardware.
+OLLAMPICS runs your Ollama models through agentic tasks — tool calling, RAG, multi-turn conversation, planning, multi-agent workflows — and gives you a clean, reproducible comparison of how each model performs on your hardware.
 
 ![Home](docs/screenshots/home.png)
 
-## ¿Por qué existe?
+## Why this exists
 
-Hay benchmarks académicos para LLMs grandes y cerrados, pero pocos pensados para los modelos que corres **localmente** con Ollama. Si quieres saber qué cuantización del modelo X corre mejor en tu Mac, o si el modelo Y nuevo realmente supera a tu favorito actual para *tu* caso de uso, lo tienes que correr tú. OLLAMPICS automatiza eso:
+There are plenty of academic benchmarks for large, closed LLMs, but very few aimed at the models you actually run **locally** with Ollama. If you want to know which quantization of model X performs best on your Mac, or whether the new model Y actually beats your current favorite for *your* use case, you have to run it yourself. OLLAMPICS automates that:
 
-- Define tareas en YAML (o las que ya vienen).
-- Dispara runs desde una UI o la CLI.
-- Captura métricas reales: throughput, TTFT, VRAM, watts, success-rate.
-- Guarda todo en SQLite — reproducible, sin nube, sin cuentas.
+- Define tasks in YAML (or use the ones that ship with it).
+- Launch runs from the UI or the CLI.
+- Capture real metrics: throughput, TTFT, VRAM, watts, success rate.
+- Store everything in SQLite — reproducible, no cloud, no accounts.
 
-Single-machine por diseño. DeepSeek se usa **sólo como juez opcional** en pruebas RAG / planning. El resto es 100% local.
+Single-machine by design. DeepSeek is used **only as an optional judge** in RAG / planning suites. The rest is 100% local.
 
 ---
 
-## Instalación
+## Install
 
-Necesitas:
+You need:
 
-- [Ollama](https://ollama.com/download) corriendo en `localhost:11434`
-- Al menos un modelo descargado: `ollama pull qwen3.6:27b-mlx`
-- Python 3.12+ vía [`uv`](https://docs.astral.sh/uv/) (no `pip`)
-- Node 20+ (sólo si vas a tocar el frontend en dev)
+- [Ollama](https://ollama.com/download) running on `localhost:11434`
+- At least one model pulled: `ollama pull qwen3.6:27b-mlx`
+- Python 3.12+ via [`uv`](https://docs.astral.sh/uv/) (not `pip`)
+- Node 20+ (only if you'll touch the frontend in dev)
 
 ```bash
 git clone https://github.com/<your-fork>/ollampics
 cd ollampics
 
 # Backend
-uv sync                       # crea .venv e instala todo
-uv run oly db init            # crea data/ollampics.db
+uv sync                       # creates .venv and installs everything
+uv run oly db init            # creates data/ollampics.db
 
-# Frontend (sólo la primera vez)
+# Frontend (only the first time)
 cd frontend && npm install && cd ..
 ```
 
-### Variables de entorno (opcionales)
+### Environment variables (optional)
 
-Copia `.env.example` a `.env` y ajusta si necesitas:
+Copy `.env.example` to `.env` and adjust if needed:
 
-- `LLM_API_KEY` — sólo si vas a correr suites RAG / planning (usan DeepSeek como juez).
-- `OLLYMPICS_OLLAMA_HOST` — si Ollama no está en `http://localhost:11434`.
-- `OLLYMPICS_ENABLE_WATTS=true` — captura potencia GPU vía `powermetrics` (macOS, requiere sudo).
+- `LLM_API_KEY` — only required if you run the RAG / planning suites (they use DeepSeek as a judge).
+- `OLLYMPICS_OLLAMA_HOST` — set if Ollama isn't on `http://localhost:11434`.
+- `OLLYMPICS_ENABLE_WATTS=true` — capture GPU power via `powermetrics` (macOS, requires sudo).
 
 ---
 
-## Cómo usar la app
+## How to use the app
 
-Dos terminales, dos servidores:
+Two terminals, two servers:
 
 ```bash
-# Terminal 1 — backend en http://localhost:8000
+# Terminal 1 — backend at http://localhost:8000
 uv run oly serve --port 8000 --reload
 
-# Terminal 2 — frontend en http://localhost:5173
+# Terminal 2 — frontend at http://localhost:5173
 cd frontend && npm run dev
 ```
 
-Abre `http://localhost:5173`. El frontend de Vite proxea `/api/*` al backend automáticamente.
+Open `http://localhost:5173`. The Vite dev server proxies `/api/*` to the backend automatically.
 
-### 1 · Home — qué hace cada pieza
+### 1 · Home — what each piece does
 
-La página de inicio explica visualmente qué es OLLAMPICS, cómo usarlo en 3 pasos, qué suites están disponibles, y qué significa cada métrica (tps, ttft, vram, watts, success_rate).
+The landing page visually explains what OLLAMPICS is, how to use it in 3 steps, which suites are available, and what each metric means (tps, ttft, vram, watts, success_rate).
 
-### 2 · Lanzar una corrida
+### 2 · Launch a run
 
-Ve a **Launcher**: marca los modelos descubiertos en Ollama, las suites que quieres correr, define `num_ctx` y `kv_cache`. Lanza.
+Go to **Launcher**: tick the models discovered in Ollama, the suites you want to run, set `num_ctx` and `kv_cache`. Hit launch.
 
 ![Launcher](docs/screenshots/launcher.png)
 
-### 3 · Ver progreso en vivo
+### 3 · Watch progress live
 
-El **Dashboard** lista runs recientes con status badges. Cada run abre una página de detalle con WebSocket: ves cada attempt al momento, con TTFT, TPS y verdict. Desde aquí también puedes borrar corridas viejas.
+The **Dashboard** lists recent runs with status badges. Each run opens a detail page with a WebSocket connection: you see every attempt as it lands, with TTFT, TPS and verdict. From here you can also delete old runs.
 
 ![Dashboard](docs/screenshots/dashboard.png)
 
-### 4 · Comparar modelos en el Leaderboard
+### 4 · Compare models on the Leaderboard
 
-El **Leaderboard** agrega los mejores attempts por `(modelo, runtime, suite)` y los rankea. Los 3 primeros lugares aparecen con medallas 🥇 🥈 🥉. Filtros por suite, modelo y cuantización.
+The **Leaderboard** aggregates the best attempts per `(model, runtime, suite)` and ranks them. The top 3 get medals 🥇 🥈 🥉. Filters by suite, model and quantization.
 
 ![Leaderboard](docs/screenshots/leaderboard.png)
 
-### 5 · Tests y corpus
+### 5 · Tests and corpus
 
-La página **Tests** muestra las suites disponibles, con tasks individuales y (para RAG) el corpus + los prompts que generaron ese corpus.
+The **Tests** page shows the available suites with their individual tasks and (for RAG) the corpus + the prompts that generated that corpus.
 
 ![Tests](docs/screenshots/tests.png)
 
-### Modo CLI (sin frontend)
+### CLI mode (no frontend)
 
 ```bash
-uv run oly models list                                # lista modelos en Ollama
-uv run oly suites                                     # lista suites disponibles
+uv run oly models list                                # list models in Ollama
+uv run oly suites                                     # list available suites
 uv run oly run --models qwen3.6:27b-mlx --suites baseline
-uv run oly results show                               # último run
+uv run oly results show                               # latest run
 uv run oly sweep --models X,Y --num-ctx 2048,4096 --kv-cache f16,q8_0 --suites baseline
 ```
 
 ---
 
-## Suites incluidas
+## Suites included
 
-| Suite | Qué mide |
+| Suite | What it measures |
 |---|---|
-| **Baseline** | Sanity check: generación corta, JSON, factual recall, instruction following, formato de lista. |
-| **Tool Calling** | 6 tools mockeadas, 8 tasks cubriendo single call, secuencias, recuperación de errores y ambigüedad. |
-| **RAG** | 50 Q&A sobre un corpus ficticio (Helion Robotics) en 3 tiers: single-doc, multi-doc, out-of-corpus. |
-| **Planning** | Cada tarea corre en modo 4a (plan propio) y 4b (plan dado) — aísla "planear" de "ejecutar". |
-| **Personal Agent** | Conversación de 20 turnos con tool calls intermedias y recall probes. Mide memoria de contexto. |
-| **Multi-agent** | Workflow Researcher → Critic → Writer vía LangGraph. Mide la calidad del reporte sintetizado. |
+| **Baseline** | Sanity check: short generation, JSON, factual recall, instruction following, list formatting. |
+| **Tool Calling** | 6 mocked tools, 8 tasks covering single calls, sequences, error recovery and ambiguity. |
+| **RAG** | 50 Q&A over a fictional corpus (Helion Robotics) in 3 tiers: single-doc, multi-doc, out-of-corpus. |
+| **Planning** | Every task runs in mode 4a (own plan) and 4b (given plan) — isolates planning from execution. |
+| **Personal Agent** | A 20-turn conversation with mid-thread tool calls and recall probes. Measures context memory. |
+| **Multi-agent** | Researcher → Critic → Writer workflow via LangGraph. Measures the synthesised report quality. |
 
-Detalles técnicos por suite en [docs/PHASES.md](docs/PHASES.md).
+Technical details per suite in [docs/PHASES.md](docs/PHASES.md).
 
 ---
 
-## Correr en Docker
+## Run in Docker
 
-> El container **no incluye Ollama**. Ollama debe correr en el host (especialmente en Mac, donde necesita acceso directo al GPU). El container apunta a `host.docker.internal:11434`.
+> The container **does not include Ollama**. Ollama must run on the host (especially on Mac, where it needs direct GPU access). The container points at `host.docker.internal:11434`.
 
 ```bash
 docker compose up --build
-# luego abre http://localhost:8000
+# then open http://localhost:8000
 ```
 
-En Linux, descomenta `extra_hosts` en `docker-compose.yml` para que `host.docker.internal` resuelva al host. La métrica de `watts` (powermetrics) no funciona dentro del container — se desactiva automáticamente; el resto de métricas queda intacto.
+On Linux, uncomment `extra_hosts` in `docker-compose.yml` so `host.docker.internal` resolves to the host. The `watts` metric (powermetrics) doesn't work inside a container — it disables itself automatically; everything else still works.
 
 ---
 
-## Métricas capturadas
+## Captured metrics
 
-Por cada attempt:
+Per attempt:
 
-| Métrica | Cómo se captura |
+| Metric | How it's captured |
 |---|---|
-| `ttft_ms` | Wall-clock al primer token del stream |
-| `tps_decode` | `eval_count / (eval_duration / 1e9)` del response de Ollama |
+| `ttft_ms` | Wall-clock to the first streamed token |
+| `tps_decode` | `eval_count / (eval_duration / 1e9)` from Ollama's response |
 | `tokens_in`, `tokens_out` | `prompt_eval_count`, `eval_count` |
-| `peak_vram_mb` | Polling de `ollama ps` cada 250ms |
-| `avg_watts` | Sampler de `powermetrics` (opt-in, requiere sudo en macOS) |
-| `success` | Booleano del verifier de la task |
-| `n_tries_used` | Cuántos intentos hicieron falta |
+| `peak_vram_mb` | Polling `ollama ps` every 250ms |
+| `avg_watts` | `powermetrics` sampler (opt-in, requires sudo on macOS) |
+| `success` | Boolean from the task's verifier |
+| `n_tries_used` | How many attempts it took to pass |
 
 ---
 
-## Contribuir
+## Contributing
 
-Si te interesa el proyecto, hay varias formas de ayudar:
+If the project interests you, there are several ways to help:
 
-- **Quick start de contribuidor**: [CONTRIBUTING.md](CONTRIBUTING.md) (convenciones, dónde están las cosas, cómo agregar tasks / suites / verifiers).
-- **Roadmap detallado**: [docs/ROADMAP.md](docs/ROADMAP.md) — items dimensionados con pre-conditions, files a tocar y acceptance criteria. Listo para que un LLM agente tome cualquier item completo.
-- **Help wanted (visión grande)**: [docs/HELP_WANTED.md](docs/HELP_WANTED.md) — las direcciones que más me importan: fingerprint de hardware, builder visual de agentes tipo N8N, mejores gráficas y observabilidad, subir tests desde la UI.
-- **Diseño del sistema**: [docs/blueprint.html](docs/blueprint.html) — fuente de verdad del diseño original.
-- **Historial técnico**: [docs/PHASES.md](docs/PHASES.md) — qué se construyó en cada fase, con resultados de smoke tests reales.
+- **Contributor quick start**: [CONTRIBUTING.md](CONTRIBUTING.md) (conventions, where things are, how to add tasks / suites / verifiers).
+- **Detailed roadmap**: [docs/ROADMAP.md](docs/ROADMAP.md) — items sized with pre-conditions, files to touch and acceptance criteria. Ready for an LLM coding agent to pick up a full item.
+- **Help wanted (big picture)**: [docs/HELP_WANTED.md](docs/HELP_WANTED.md) — the directions I care most about: hardware fingerprinting, an N8N-style visual agent builder, better charts and observability, uploading tests from the UI.
+- **System design**: [docs/blueprint.html](docs/blueprint.html) — the source of truth for the original design.
+- **Technical history**: [docs/PHASES.md](docs/PHASES.md) — what was built in each phase, with real smoke-test results.
 
-Abre un issue antes de empezar para no duplicar trabajo.
+Open an issue before starting work so we don't duplicate effort.
 
 ---
 
@@ -171,6 +173,6 @@ Abre un issue antes de empezar para no duplicar trabajo.
 
 ---
 
-## Licencia
+## License
 
 [MIT](LICENSE) © 2026 Fernando Mejía Laguna
