@@ -47,9 +47,13 @@ function diffPct(a: number | null, b: number | null) {
 
 export default function CompareTable({ data }: Props) {
   const { t } = useTranslation();
-  const { run_a, run_b, entries, summary } = data;
-  const labelA = `#${run_a.id}`;
-  const labelB = `#${run_b.id}`;
+  const { model_a, model_b, entries, summary } = data;
+  const shortName = (n: string) => {
+    const last = n.split("/").pop() || n;
+    return last.length > 22 ? last.slice(0, 20) + "…" : last;
+  };
+  const labelA = shortName(model_a.name);
+  const labelB = shortName(model_b.name);
 
   return (
     <>

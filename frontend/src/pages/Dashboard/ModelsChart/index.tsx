@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Bar,
-  BarChart,
   CartesianGrid,
   Cell,
+  ComposedChart,
+  Legend,
+  Line,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -15,7 +17,7 @@ import { Empty, Header, Sub, Title, Wrap } from "./style";
 
 const COLORS = ["#3D49E4", "#5DBA32", "#F4C84A", "#8AA7E8", "#E5358F", "#F2A340", "#8C42D8"];
 
-type Row = { model: string; successRate: number; tps: number | null };
+type Row = { model: string; successRate: number; tps: number };
 
 export default function ModelsChart() {
   const { t } = useTranslation();
@@ -30,21 +32,27 @@ export default function ModelsChart() {
   }, []);
 
   const rows: Row[] = useMemo(() => {
-    // Aggregate by model across all suites + runtimes — average success_rate
-    // weighted by n_tasks; best tps.
-    const byModel = new Map<string, { successWeighted: number; tasks: number; tps: number }>();
+    // Aggregate by model across all suites + runtimes.
+    // success_rate: weighted by n_tasks. tps: averaged across runtime/suite variants.
+    const byModel = new Map<
+      string,
+      { successWeighted: number; tasks: number; tpsSum: number; tpsN: number }
+    >();
     for (const e of entries) {
-      const prev = byModel.get(e.model) || { successWeighted: 0, tasks: 0, tps: 0 };
+      const prev = byModel.get(e.model) || { successWeighted: 0, tasks: 0, tpsSum: 0, tpsN: 0 };
       prev.successWeighted += e.success_rate * e.n_tasks;
       prev.tasks += e.n_tasks;
-      prev.tps = Math.max(prev.tps, e.avg_tps || 0);
+      if (e.avg_tps != null) {
+        prev.tpsSum += e.avg_tps;
+        prev.tpsN += 1;
+      }
       byModel.set(e.model, prev);
     }
     return [...byModel.entries()]
       .map(([model, agg]) => ({
         model: shortenModel(model),
         successRate: agg.tasks > 0 ? (agg.successWeighted / agg.tasks) * 100 : 0,
-        tps: agg.tps || null,
+        tps: agg.tpsN > 0 ? Number((agg.tpsSum / agg.tpsN).toFixed(1)) : 0,
       }))
       .sort((a, b) => b.successRate - a.successRate);
   }, [entries]);
@@ -60,9 +68,9 @@ export default function ModelsChart() {
       {rows.length === 0 ? (
         <Empty>{t("dashboard.chartEmpty")}</Empty>
       ) : (
-        <div style={{ width: "100%", height: 260 }}>
+        <div style={{ width: "100%", height: 300 }}>
           <ResponsiveContainer>
-            <BarChart data={rows} margin={{ top: 10, right: 20, left: 0, bottom: 30 }}>
+            <ComposedChart data={rows} margin={{ top: 10, right: 20, left: 0, bottom: 40 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--border-soft))" />
               <XAxis
                 dataKey="model"
@@ -71,13 +79,20 @@ export default function ModelsChart() {
                 angle={-15}
                 textAnchor="end"
                 interval={0}
-                height={50}
+                height={60}
               />
               <YAxis
+                yAxisId="left"
                 stroke="rgb(var(--fg-dim))"
                 fontSize={11}
                 domain={[0, 100]}
                 unit="%"
+              />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                stroke="rgb(var(--fg-dim))"
+                fontSize={11}
               />
               <Tooltip
                 contentStyle={{
@@ -85,14 +100,23 @@ export default function ModelsChart() {
                   border: "1px solid rgb(var(--border))",
                   fontSize: 12,
                 }}
-                formatter={(v) => `${Number(v).toFixed(1)}%`}
               />
-              <Bar dataKey="successRate" radius={[4, 4, 0, 0]}>
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Bar yAxisId="left" dataKey="successRate" name="success%" radius={[4, 4, 0, 0]}>
                 {rows.map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Bar>
-            </BarChart>
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="tps"
+                stroke="#E5358F"
+                strokeWidth={2}
+                dot={{ r: 3 }}
+                name="tps"
+              />
+            </ComposedChart>
           </ResponsiveContainer>
         </div>
       )}
@@ -101,7 +125,6 @@ export default function ModelsChart() {
 }
 
 function shortenModel(name: string): string {
-  // Keep last segment after / and trim quant tag for readability
   const last = name.split("/").pop() || name;
   return last.length > 28 ? last.slice(0, 26) + "…" : last;
 }

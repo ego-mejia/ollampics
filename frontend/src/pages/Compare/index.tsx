@@ -5,7 +5,7 @@ import {
   fetchCompare,
   fetchCompareOptions,
   type CompareResponse,
-  type RunBrief,
+  type ModelBrief,
 } from "../../api";
 import Alert from "../../components/Alert";
 import CompareHero from "./CompareHero";
@@ -16,13 +16,13 @@ import { PageWrap } from "./style";
 export default function Compare() {
   const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
-  const [options, setOptions] = useState<RunBrief[]>([]);
+  const [options, setOptions] = useState<ModelBrief[]>([]);
   const [data, setData] = useState<CompareResponse | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const a = params.get("a") ? Number(params.get("a")) : null;
-  const b = params.get("b") ? Number(params.get("b")) : null;
+  const a = params.get("a");
+  const b = params.get("b");
 
   useEffect(() => {
     fetchCompareOptions()
@@ -42,11 +42,11 @@ export default function Compare() {
       .finally(() => setLoading(false));
   }, [a, b]);
 
-  const setSelection = (na: number | null, nb: number | null) => {
+  const setSelection = (na: string | null, nb: string | null) => {
     const next = new URLSearchParams(params);
-    if (na) next.set("a", String(na));
+    if (na) next.set("a", na);
     else next.delete("a");
-    if (nb) next.set("b", String(nb));
+    if (nb) next.set("b", nb);
     else next.delete("b");
     setParams(next, { replace: true });
   };
@@ -58,7 +58,7 @@ export default function Compare() {
       <CompareSelector options={options} valueA={a} valueB={b} onChange={setSelection} />
       {loading && <p className="text-fg-dim">{t("common.loading")}</p>}
       {!loading && !data && a && b && a === b && (
-        <Alert>{t("compare.sameRun")}</Alert>
+        <Alert>{t("compare.sameModel")}</Alert>
       )}
       {!loading && !data && (!a || !b) && (
         <p className="text-fg-dim">{t("compare.pickPair")}</p>

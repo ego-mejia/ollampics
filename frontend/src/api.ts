@@ -162,19 +162,14 @@ export async function triggerCorpusGenerate(
   return r.json();
 }
 
-// — Compare —
+// — Compare (by model) —
 
-export type RunBrief = {
-  id: number;
-  created_at: string;
-  status: string;
-  model: string | null;
-  runtime_hash: string | null;
-  num_ctx: number | null;
-  kv_cache_type: string | null;
-  notes: string | null;
+export type ModelBrief = {
+  name: string;
+  n_runs: number;
   n_tasks: number;
   n_successes: number;
+  last_seen: string | null;
 };
 
 export type CompareEntry = {
@@ -193,8 +188,8 @@ export type CompareEntry = {
 };
 
 export type CompareResponse = {
-  run_a: RunBrief;
-  run_b: RunBrief;
+  model_a: ModelBrief;
+  model_b: ModelBrief;
   entries: CompareEntry[];
   summary: {
     a_only_success: number;
@@ -204,9 +199,11 @@ export type CompareResponse = {
   };
 };
 
-export const fetchCompareOptions = () => getJson<RunBrief[]>(`/compare/options`);
-export const fetchCompare = (a: number, b: number) =>
-  getJson<CompareResponse>(`/compare?a=${a}&b=${b}`);
+export const fetchCompareOptions = () => getJson<ModelBrief[]>(`/compare/options`);
+export const fetchCompare = (a: string, b: string) =>
+  getJson<CompareResponse>(
+    `/compare?model_a=${encodeURIComponent(a)}&model_b=${encodeURIComponent(b)}`
+  );
 
 // — WebSocket for live run events —
 

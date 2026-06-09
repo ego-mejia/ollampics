@@ -46,7 +46,8 @@ async def get_leaderboard(
 
         rows = s.execute(stmt).all()
 
-        # Best attempt per (model, runtime, task): success > fail > error, low try_n wins
+        # Latest attempt per (model, runtime, task): highest run_id wins; tie → lowest try_n.
+        # Rationale: re-running the same combo overrides the previous measurement.
         best: dict[tuple[str, str, int], tuple[Attempt, str]] = {}
         attempt_count: dict[tuple[str, str, int], int] = defaultdict(int)
         for a, m, rc, tr in rows:
@@ -57,9 +58,9 @@ async def get_leaderboard(
                 best[key] = (a, tr.suite)
                 continue
             cur_a, _ = current
-            if cur_a.status != "success" and a.status == "success":
+            if a.run_id > cur_a.run_id:
                 best[key] = (a, tr.suite)
-            elif cur_a.status == a.status and a.try_n < cur_a.try_n:
+            elif a.run_id == cur_a.run_id and a.try_n < cur_a.try_n:
                 best[key] = (a, tr.suite)
 
         # Aggregate by (model, runtime, suite)
